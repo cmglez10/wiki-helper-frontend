@@ -1,4 +1,4 @@
-.CgiLeague {
+.CgiPlayoff {
   &-container {
     display: flex;
     flex-direction: column;
@@ -10,23 +10,6 @@
     align-items: center;
     justify-content: center;
   }
-
-  &-loading {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex: 1 1 auto;
-  }
-
-  &-results {
-    display: flex;
-    gap: 5rem;
-  }
-
-  &-table {
-    flex: 1 1 auto;
-  }
-
   &-code {
     flex: 1 0 950px;
   }

@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LeagueTeam } from './interfaces/league.interface';
+import { PlayoffRound } from './interfaces/playoff.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -12,5 +13,9 @@ export class HttpService {
 
   public getLeague(groupId: number, section = 'm'): Observable<LeagueTeam[]> {
     return this._http.get<LeagueTeam[]>(`${this._baseUrl}league/${groupId}/section/${section}`);
+  }
+
+  public getPlayoff(groupId: number): Observable<PlayoffRound[]> {
+    return this._http.get<PlayoffRound[]>(`${this._baseUrl}playoff/${groupId}`);
   }
 }

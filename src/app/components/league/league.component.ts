@@ -1,27 +1,17 @@
 import { Component, computed, inject, Signal, signal, WritableSignal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
-import { isNumber, toInteger, trimEnd } from 'lodash-es';
+import { isNumber, trimEnd } from 'lodash-es';
+import { Section } from '../../constants/section.enum';
 import { HttpService } from '../../services/http/http.service';
 import { LeagueTeam } from '../../services/http/interfaces/league.interface';
 import { Utils } from '../../utilities/utils';
-
-enum Section {
-  Masculino = 'm',
-  Femenino = 'f',
-  Juvenil = 'j',
-}
-
-interface FormGroupLeague {
-  group: FormControl<string | null>;
-  section: FormControl<Section | null>;
-}
+import { ISearchData, SearchComponent } from '../search/search.component';
 
 @Component({
   selector: 'cgi-league',
@@ -33,16 +23,21 @@ interface FormGroupLeague {
     MatFormFieldModule,
     MatInputModule,
     MatProgressSpinnerModule,
-    MatSlideToggleModule,
     MatTableModule,
     ReactiveFormsModule,
+    SearchComponent,
+    SearchComponent,
   ],
 })
 export class LeagueComponent {
-  public form: FormGroup<FormGroupLeague>;
+  public readonly searchData: WritableSignal<ISearchData> = signal({
+    group: null,
+    section: Section.Masculino,
+    flags: false,
+  });
   public readonly league: WritableSignal<LeagueTeam[]> = signal([]);
   public readonly wikiCode: Signal<string>;
-  public loading = signal(false);
+  public readonly loading = signal(false);
   public readonly displayedColumns = [
     'position',
     'shield',
@@ -58,19 +53,12 @@ export class LeagueComponent {
     'points',
   ];
 
-  protected Section = Section;
-
   private readonly _httpService: HttpService = inject(HttpService);
   private readonly _teamDefinition: Signal<string>;
   private readonly _teamTable: Signal<string>;
   private readonly _teamOrder: Signal<string>;
 
   constructor() {
-    this.form = new FormGroup<FormGroupLeague>({
-      group: new FormControl<string>(''),
-      section: new FormControl(Section.Masculino),
-    });
-
     this._teamDefinition = computed(() => {
       let res = '';
       for (const team of this.league()) {
@@ -114,7 +102,7 @@ export class LeagueComponent {
 <!-- '''LEER ESTO ANTES DE ACTUALIZAR:''' Por favor, no olvides actualizar la fecha a través del parámetro ({{parámetro|actualizado}}). -->
 {{#invoke:Football table|main|estilo=WDL
 |actualizado=completo
-|fuente=[https://www.futbol-regional.es/competicion.php?${this.form.value.group} Fútbol Regional]
+|fuente=[https://www.futbol-regional.es/competicion.php?${this.searchData().group} Fútbol Regional]
 
 <!--Definiciones de los equipos (wikilinks en tabla)-->
 ${this._teamDefinition()}
@@ -129,14 +117,14 @@ ${this._teamOrder()}
     });
   }
 
-  public getLeague(): void {
-    let { group, section } = this.form.value;
-    const groupInteger = toInteger(group);
+  public getLeague(event: ISearchData): void {
+    let { group, section } = event;
     section = section || Section.Masculino;
-    if (isNumber(groupInteger) && groupInteger > 0) {
+    if (isNumber(group) && group > 0) {
       this.league.set([]);
       this.loading.set(true);
-      this._httpService.getLeague(groupInteger, section).subscribe((league) => {
+      this._httpService.getLeague(group, section).subscribe((league) => {
+        this.searchData.set(event);
         this.league.set(league);
         this.loading.set(false);
       });

@@ -1,0 +1,24 @@
+<div class="CgiPlayoff-container">
+  <div class="CgiPlayoff-header">
+    <h1>Playoff</h1>
+  </div>
+
+  <div class="CgiPlayoff-searchContainer">
+    <cgi-search (cgiSearch)="getPlayoff($event)"></cgi-search>
+  </div>
+
+  @if (loading()) {
+    <div class="CgiPlayoff-loading">
+      <mat-spinner diameter="100"></mat-spinner>
+    </div>
+  }
+
+  <div class="CgiLeague-results">
+    @if (playoffs().length && wikiCode().length) {
+      <mat-form-field class="CgiLeague-code">
+        <mat-label>Wiki code</mat-label>
+        <textarea [value]="wikiCode()" cdkTextareaAutosize class="CgiLeague-codeInput" matInput readonly></textarea>
+      </mat-form-field>
+    }
+  </div>
+</div>

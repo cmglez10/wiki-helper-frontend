@@ -1,0 +1,12 @@
+<div class="CgiSearch-container">
+  <mat-form-field>
+    <mat-label>Grupo</mat-label>
+    <input matInput type="number" min="1" placeholder="Id de grupo" [formControl]="form.controls.group" />
+  </mat-form-field>
+  <mat-button-toggle-group [formControl]="form.controls.section">
+    <mat-button-toggle [value]="Section.Masculino">Masculino</mat-button-toggle>
+    <mat-button-toggle [value]="Section.Femenino">Femenino</mat-button-toggle>
+    <mat-button-toggle [value]="Section.Juvenil">Juvenil</mat-button-toggle>
+  </mat-button-toggle-group>
+  <button mat-flat-button color="primary" (click)="search()" [disabled]="form.pristine || form.invalid">Buscar</button>
+</div>
