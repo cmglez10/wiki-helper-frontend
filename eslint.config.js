@@ -38,7 +38,7 @@ module.exports = [
         'warn',
         {
           type: 'element',
-          prefix: 'app',
+          prefix: 'cgi',
           style: 'kebab-case',
         },
       ],
