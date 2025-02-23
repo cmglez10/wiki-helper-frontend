@@ -1,1 +1,24 @@
-<p>results works!</p>
+<div class="CgiResults-container">
+  <div class="CgiResults-header">
+    <h1>Resultados</h1>
+  </div>
+
+  <div class="CgiResults-searchContainer">
+    <cgi-search (cgiSearch)="getResults($event)"></cgi-search>
+  </div>
+
+  @if (loading()) {
+    <div class="CgiResults-loading">
+      <mat-spinner diameter="100"></mat-spinner>
+    </div>
+  }
+
+  <div class="CgiResults-results">
+    @if (results() && wikiCode().length) {
+      <mat-form-field class="CgiResults-code">
+        <mat-label>Wiki code</mat-label>
+        <textarea [value]="wikiCode()" cdkTextareaAutosize class="CgiResults-codeInput" matInput readonly></textarea>
+      </mat-form-field>
+    }
+  </div>
+</div>

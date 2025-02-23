@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Section } from '../../constants/section.enum';
 import { LeagueTeam } from './interfaces/league.interface';
 import { PlayoffRound } from './interfaces/playoff.interface';
+import { ResultsData } from './interfaces/results.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -18,5 +19,14 @@ export class HttpService {
 
   public getPlayoff(groupId: number, section = Section.Masculino): Observable<PlayoffRound[]> {
     return this._http.get<PlayoffRound[]>(`${this._baseUrl}playoff/${groupId}/section/${section}`);
+  }
+
+  public getResults(
+    federationId: number,
+    groupId: number,
+    year: number,
+    section = Section.Masculino
+  ): Observable<ResultsData> {
+    return this._http.get<ResultsData>(`${this._baseUrl}results/${federationId}/${groupId}/${year}/${section}`);
   }
 }

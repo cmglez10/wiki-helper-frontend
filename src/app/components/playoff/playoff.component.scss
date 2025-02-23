@@ -11,6 +11,13 @@
     justify-content: center;
   }
 
+  &-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1 1 auto;
+  }
+
   &-results {
     display: flex;
     flex-direction: column;
