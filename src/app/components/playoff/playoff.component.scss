@@ -10,6 +10,12 @@
     align-items: center;
     justify-content: center;
   }
+
+  &-results {
+    display: flex;
+    flex-direction: column;
+  }
+
   &-code {
     flex: 1 0 950px;
   }

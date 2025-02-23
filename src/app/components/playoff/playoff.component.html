@@ -13,11 +13,11 @@
     </div>
   }
 
-  <div class="CgiLeague-results">
+  <div class="CgiPlayoff-results">
     @if (playoffs().length && wikiCode().length) {
-      <mat-form-field class="CgiLeague-code">
+      <mat-form-field class="CgiPlayoff-code">
         <mat-label>Wiki code</mat-label>
-        <textarea [value]="wikiCode()" cdkTextareaAutosize class="CgiLeague-codeInput" matInput readonly></textarea>
+        <textarea [value]="wikiCode()" cdkTextareaAutosize class="CgiPlayoff-codeInput" matInput readonly></textarea>
       </mat-form-field>
     }
   </div>
