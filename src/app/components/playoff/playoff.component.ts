@@ -43,10 +43,11 @@ export class PlayoffComponent {
   }
 
   public getPlayoff(event: ISearchData): void {
-    let { group } = event;
+    let { group, section } = event;
+    section = section || Section.Masculino;
     if (isNumber(group) && group > 0) {
       this.loading.set(true);
-      this._httpService.getPlayoff(group).subscribe((playoffs) => {
+      this._httpService.getPlayoff(group, section).subscribe((playoffs) => {
         this.searchData.set(event);
         this.playoffs.set(playoffs);
         this.loading.set(false);
