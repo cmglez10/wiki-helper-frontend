@@ -50,7 +50,8 @@ export class ResultsComponent {
     section = section || Section.Masculino;
     if (isNumber(group) && group > 0) {
       this.loading.set(true);
-      this._httpService.getResults(10, group, 2024, section).subscribe((results) => {
+      this.results.set(null);
+      this._httpService.getResults(group, section).subscribe((results) => {
         this.searchData.set(event);
         this.results.set(results);
         this.loading.set(false);
