@@ -4,10 +4,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
-import { isNumber } from 'lodash';
+import { isNumber, join, map } from 'lodash';
 import { Section } from '../../constants/section.enum';
 import { HttpService } from '../../services/http/http.service';
 import { ResultsData } from '../../services/http/interfaces/results.interface';
+import { Utils } from '../../utilities/utils';
 import { ISearchData, SearchComponent } from '../search/search.component';
 
 @Component({
@@ -32,12 +33,6 @@ export class ResultsComponent {
   public readonly loading = signal(false);
   public readonly wikiCode: Signal<string>;
   public readonly results: WritableSignal<ResultsData | null> = signal(null);
-  public readonly displayedColumns = computed(() => {
-    const columns = ['teams'];
-    for (let i = 1; i <= (this.results()?.results.length || 0); i++) {
-      columns.push(i.toString());
-    }
-  });
 
   private readonly _httpService: HttpService = inject(HttpService);
 
@@ -63,7 +58,62 @@ export class ResultsComponent {
     }
   }
 
+  private _getTeamsInfo(): string {
+    if (!this.results()) {
+      return '';
+    }
+
+    const teams = map(this.results()!.teams, (team, index) => {
+      return `|equipo${index + 1}=${Utils.getInitials(team.name)}`;
+    });
+
+    const teamNames = map(this.results()!.teams, (team) => {
+      return `
+|nombre_${Utils.getInitials(team.name)}=[[${team.completeName}|${team.name}]]`;
+    });
+
+    return `${join(teams, '')}
+    ${join(teamNames, '')}`;
+  }
+
+  private _getTeamResults(): string {
+    if (!this.results()) {
+      return '';
+    }
+
+    let code = '';
+    for (let i = 0; i < this.results()!.teams.length; i++) {
+      for (let j = 0; j < this.results()!.teams.length; j++) {
+        if (i === j) {
+          continue;
+        }
+
+        const homeTeam = Utils.getInitials(this.results()!.teams[i].name);
+        const awayTeam = Utils.getInitials(this.results()!.teams[j].name);
+        const result = this.results()!.results[i][j]
+          ? `${this.results()!.results[i][j].home}-${this.results()!.results[i][j].away}`
+          : '';
+
+        code += `|partido_${homeTeam}_${awayTeam}=${result}`;
+        code += '\n';
+      }
+      code += '\n';
+    }
+
+    return code;
+  }
+
   private _getCodeResults() {
-    return JSON.stringify(this.results());
+    return `
+{{#invoke:football results|main
+| fuente=[https://www.futbol-regional.es/competicion.php?${this.searchData().group} Fútbol Regional]
+| estilo_partidos= FBR
+|actualizado=completo
+
+${this._getTeamsInfo()}
+
+${this._getTeamResults()}
+}}
+`;
   }
 }

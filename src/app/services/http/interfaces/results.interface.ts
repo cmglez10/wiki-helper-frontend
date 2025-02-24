@@ -1,5 +1,6 @@
-export interface TeamInfo {
+export interface Team {
   completeName: string;
+  name: string;
   flag: string;
 }
 
@@ -9,8 +10,8 @@ export interface Result {
 }
 
 export interface RecordResult {
-  homeTeam: TeamInfo;
-  awayTeam: TeamInfo;
+  homeTeam: Team;
+  awayTeam: Team;
   result: Result;
   goals: number;
 }
@@ -22,7 +23,7 @@ interface Records {
 }
 
 export interface ResultsData {
-  teams: Array<TeamInfo>;
+  teams: Array<Team>;
   results: Array<Array<Result>>;
   records: Records;
 }
