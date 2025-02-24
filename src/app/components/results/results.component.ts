@@ -3,6 +3,7 @@ import { Component, computed, inject, signal, Signal, WritableSignal } from '@an
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableModule } from '@angular/material/table';
 import { isNumber } from 'lodash';
 import { Section } from '../../constants/section.enum';
 import { HttpService } from '../../services/http/http.service';
@@ -13,7 +14,14 @@ import { ISearchData, SearchComponent } from '../search/search.component';
   selector: 'cgi-results',
   templateUrl: './results.component.html',
   styleUrl: './results.component.scss',
-  imports: [SearchComponent, MatProgressSpinnerModule, MatFormFieldModule, MatInputModule, CdkTextareaAutosize],
+  imports: [
+    CdkTextareaAutosize,
+    MatFormFieldModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    SearchComponent,
+  ],
 })
 export class ResultsComponent {
   public readonly searchData: WritableSignal<ISearchData> = signal({
@@ -24,6 +32,12 @@ export class ResultsComponent {
   public readonly loading = signal(false);
   public readonly wikiCode: Signal<string>;
   public readonly results: WritableSignal<ResultsData | null> = signal(null);
+  public readonly displayedColumns = computed(() => {
+    const columns = ['teams'];
+    for (let i = 1; i <= (this.results()?.results.length || 0); i++) {
+      columns.push(i.toString());
+    }
+  });
 
   private readonly _httpService: HttpService = inject(HttpService);
 

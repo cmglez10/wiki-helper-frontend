@@ -1,8 +1,4 @@
 <div class="CgiResults-container">
-  <div class="CgiResults-header">
-    <h1>Resultados</h1>
-  </div>
-
   <div class="CgiResults-searchContainer">
     <cgi-search (cgiSearch)="getResults($event)"></cgi-search>
   </div>
@@ -15,6 +11,25 @@
 
   <div class="CgiResults-results">
     @if (results() && wikiCode().length) {
+      <div class="CgiLeague-table">
+        <table mat-table [dataSource]="results()?.results || []" class="CgiLeague-table">
+          <ng-container matColumnDef="teams">
+            <th mat-header-cell *matHeaderCellDef>Equipos</th>
+            <td mat-cell *matCellDef="let result; let i = index">{{ results()?.teams?.[i]?.completeName }}</td>
+          </ng-container>
+
+          @for (result of results()?.results; let i = $index; track $index) {
+            <ng-container matColumnDef="{{ i }}">
+              <th mat-header-cell *matHeaderCellDef>{{ results()?.teams?.[i]?.completeName }}</th>
+              <td mat-cell *matCellDef="let result">{{ result.home }} - {{ result.away }}</td>
+            </ng-container>
+          }
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </div>
+
       <mat-form-field class="CgiResults-code">
         <mat-label>Wiki code</mat-label>
         <textarea [value]="wikiCode()" cdkTextareaAutosize class="CgiResults-codeInput" matInput readonly></textarea>

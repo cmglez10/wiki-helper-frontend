@@ -22,6 +22,9 @@
       color 0.3s,
       background-color 0.3s;
     padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 
     &#{$cmp}-navLinkActive {
       background-color: var(--mat-sys-on-primary-fixed-variant);
@@ -30,5 +33,9 @@
     &:hover {
       background-color: var(--mat-sys-primary);
     }
+  }
+
+  &-playoffIcon {
+    transform: rotateY(180deg);
   }
 }

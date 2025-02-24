@@ -1,8 +1,14 @@
 <div class="CgiHome-container">
   <nav class="CgiHome-nav">
-    <a class="CgiHome-navLink" routerLink="/league" routerLinkActive="CgiHome-navLinkActive">Liga</a>
-    <a class="CgiHome-navLink" routerLink="/playoff" routerLinkActive="CgiHome-navLinkActive">Playoff</a>
-    <a class="CgiHome-navLink" routerLink="/results" routerLinkActive="CgiHome-navLinkActive">Resultados</a>
+    <a class="CgiHome-navLink" routerLink="/league" routerLinkActive="CgiHome-navLinkActive"
+      ><mat-icon fontIcon="list_alt" /> Liga</a
+    >
+    <a class="CgiHome-navLink" routerLink="/playoff" routerLinkActive="CgiHome-navLinkActive"
+      ><mat-icon fontIcon="account_tree" class="CgiHome-playoffIcon" />Playoff</a
+    >
+    <a class="CgiHome-navLink" routerLink="/results" routerLinkActive="CgiHome-navLinkActive"
+      ><mat-icon fontIcon="sports_soccer" />Resultados</a
+    >
   </nav>
   <router-outlet></router-outlet>
 </div>
