@@ -20,11 +20,12 @@
 
   &-results {
     display: flex;
-    flex-direction: column;
+    gap: 5rem;
   }
 
-  &-code {
-    flex: 1 0 950px;
+  &-code,
+  &-recordsCode {
+    flex: 1 0 500px;
   }
 
   &-codeInput {

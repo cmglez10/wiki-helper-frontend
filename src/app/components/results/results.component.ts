@@ -5,6 +5,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { isNumber, join, map } from 'lodash';
+import { DateTime } from 'luxon';
 import { Section } from '../../constants/section.enum';
 import { HttpService } from '../../services/http/http.service';
 import { ResultsData } from '../../services/http/interfaces/results.interface';
@@ -32,16 +33,18 @@ export class ResultsComponent {
   });
   public readonly loading = signal(false);
   public readonly wikiCode: Signal<string>;
+  public readonly recordsCode: Signal<string>;
   public readonly results: WritableSignal<ResultsData | null> = signal(null);
 
   private readonly _httpService: HttpService = inject(HttpService);
 
   constructor() {
     this.wikiCode = computed(() => {
-      const code = `
-  ${this._getCodeResults()}
-`;
-      return code;
+      return this._getCodeResults();
+    });
+
+    this.recordsCode = computed(() => {
+      return this._getRecordsCode();
     });
   }
 
@@ -106,6 +109,9 @@ export class ResultsComponent {
 
   private _getCodeResults() {
     return `
+=== Tabla de resultados cruzados ===
+<center>
+
 {{#invoke:football results|main
 | fuente=[https://www.futbol-regional.es/competicion.php?${this.searchData().group} Fútbol Regional]
 | estilo_partidos= FBR
@@ -115,6 +121,124 @@ ${this._getTeamsInfo()}
 
 ${this._getTeamResults()}
 }}
+</center>
 `;
+  }
+
+  private _getRecordsCode() {
+    if (!this.results()) {
+      return '';
+    }
+
+    const today = DateTime.now();
+
+    return `=== Récords ===
+
+{| align="left" cellpadding="2" cellspacing="0" style="background: #f9f9f9; border: 1px #aaa solid; border-collapse: collapse; font-size: 85%;"
+|- style="color:black;" bgcolor="#ccddcc"
+!colspan=9 bgcolor=#ccddcc width="100%"|{{font color|black|Récords de equipos}}
+|-style="border: 1px #aaa solid;"
+! width="15%" bgcolor=E6EEE6|Récord
+! width="15%" bgcolor=E6EEE6|Fecha
+! width="15%" bgcolor=E6EEE6|Equipo/s
+! width="20%" bgcolor=E6EEE6|Local
+! bgcolor=E6EEE6|
+! bgcolor=E6EEE6|Resultado
+! bgcolor=E6EEE6|
+! width="20%" bgcolor=E6EEE6|Visitante
+! width="15%" bgcolor=E6EEE6|{{abreviación|Rep.|Reporte}}
+
+${this._getMoreGoalsMatchCode()}
+${this._getBiggestHomeWinCode()}
+${this._getBiggestAwayWinCode()}
+|}
+{{smaller|'''Fuente''': [https://www.futbol-regional.es/competicion.php?${this.searchData().group} Fútbol Regional]. Actualizado a '''{{fecha|${today.day}|${today.month}|${today.year}}}'''.}}
+`;
+  }
+
+  private _getMoreGoalsMatchCode(): string {
+    const moreGoalsMatches = this.results()!.records.moreGoalsMatch;
+
+    if (moreGoalsMatches.length === 0) {
+      return '';
+    }
+
+    let code = '';
+
+    for (let i = 0; i < moreGoalsMatches.length; i++) {
+      const homeTeam = `[[${moreGoalsMatches[i].homeTeam.completeName}|${moreGoalsMatches[i].homeTeam.name}]]`;
+      const awayTeam = `[[${moreGoalsMatches[i].awayTeam.completeName}|${moreGoalsMatches[i].awayTeam.name}]]`;
+
+      code += `|- align=center style="border: 1px #aaa solid;"\n`;
+      if (i === 0) {
+        code += `|style="border: 1px #aaa solid;" bgcolor=E6EEE6 rowspan=${moreGoalsMatches.length}|Más goles en un partido\n`;
+      }
+      code += `|
+|align=left| ${homeTeam} y ${awayTeam} (${moreGoalsMatches[i].goals})
+|${homeTeam}|| {{bandera|tamaño=15px|${moreGoalsMatches[i].homeTeam.flag}}}
+|${moreGoalsMatches[i].result.home} – ${moreGoalsMatches[i].result.away}
+|{{bandera|tamaño=15px|${moreGoalsMatches[i].homeTeam.flag}}} || ${awayTeam}
+|
+`;
+    }
+    return code;
+  }
+
+  private _getBiggestHomeWinCode(): string {
+    const biggestHomeWin = this.results()!.records.biggestHomeWin;
+
+    if (biggestHomeWin.length === 0) {
+      return '';
+    }
+
+    let code = '';
+
+    for (let i = 0; i < biggestHomeWin.length; i++) {
+      const homeTeam = `[[${biggestHomeWin[i].homeTeam.completeName}|${biggestHomeWin[i].homeTeam.name}]]`;
+      const awayTeam = `[[${biggestHomeWin[i].awayTeam.completeName}|${biggestHomeWin[i].awayTeam.name}]]`;
+
+      code += `|- align=center style="border: 1px #aaa solid;"\n`;
+      if (i === 0) {
+        code += `|style="border: 1px #aaa solid;" bgcolor=E6EEE6 rowspan=${biggestHomeWin.length}|Mayor victoria local\n`;
+      }
+      code += `|
+|align=left|${homeTeam} (+${biggestHomeWin[i].goals})
+|'''${homeTeam}'''|| {{bandera|tamaño=15px|${biggestHomeWin[i].homeTeam.flag}}}
+|${biggestHomeWin[i].result.home} – ${biggestHomeWin[i].result.away}
+|{{bandera|tamaño=15px|${biggestHomeWin[i].homeTeam.flag}}} || ${awayTeam}
+|
+`;
+    }
+
+    return code;
+  }
+
+  private _getBiggestAwayWinCode(): string {
+    const biggestAwayWin = this.results()!.records.biggestAwayWin;
+
+    if (biggestAwayWin.length === 0) {
+      return '';
+    }
+
+    let code = '';
+
+    for (let i = 0; i < biggestAwayWin.length; i++) {
+      const homeTeam = `[[${biggestAwayWin[i].homeTeam.completeName}|${biggestAwayWin[i].homeTeam.name}]]`;
+      const awayTeam = `[[${biggestAwayWin[i].awayTeam.completeName}|${biggestAwayWin[i].awayTeam.name}]]`;
+
+      code += `|- align=center style="border: 1px #aaa solid;"\n`;
+      if (i === 0) {
+        code += `|style="border: 1px #aaa solid;" bgcolor=E6EEE6 rowspan=${biggestAwayWin.length}|Mayor victoria visitante\n`;
+      }
+      code += `|
+|align=left|${awayTeam} (+${biggestAwayWin[i].goals})
+|${homeTeam}|| {{bandera|tamaño=15px|${biggestAwayWin[i].homeTeam.flag}}}
+|${biggestAwayWin[i].result.home} – ${biggestAwayWin[i].result.away}
+|{{bandera|tamaño=15px|${biggestAwayWin[i].awayTeam.flag}}} || '''${awayTeam}'''
+|
+`;
+    }
+
+    return code;
   }
 }

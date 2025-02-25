@@ -12,8 +12,19 @@
   <div class="CgiResults-results">
     @if (results() && wikiCode().length) {
       <mat-form-field class="CgiResults-code">
-        <mat-label>Wiki code</mat-label>
+        <mat-label>Resultados Wiki code</mat-label>
         <textarea [value]="wikiCode()" cdkTextareaAutosize class="CgiResults-codeInput" matInput readonly></textarea>
+      </mat-form-field>
+
+      <mat-form-field class="CgiResults-recordsCode">
+        <mat-label>Records code</mat-label>
+        <textarea
+          [value]="recordsCode()"
+          cdkTextareaAutosize
+          class="CgiResults-recordsCodeInput"
+          matInput
+          readonly
+        ></textarea>
       </mat-form-field>
     }
   </div>

@@ -17,9 +17,9 @@ export interface RecordResult {
 }
 
 interface Records {
-  biggestHomeWin: RecordResult;
-  biggestAwayWin: RecordResult;
-  moreGoalsMatch: RecordResult;
+  biggestHomeWin: Array<RecordResult>;
+  biggestAwayWin: Array<RecordResult>;
+  moreGoalsMatch: Array<RecordResult>;
 }
 
 export interface ResultsData {
