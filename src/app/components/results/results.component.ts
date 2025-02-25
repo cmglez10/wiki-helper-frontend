@@ -4,7 +4,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
-import { isNumber, join, map } from 'lodash';
+import { isNumber, join, map } from 'lodash-es';
 import { DateTime } from 'luxon';
 import { Section } from '../../constants/section.enum';
 import { HttpService } from '../../services/http/http.service';
