@@ -177,7 +177,7 @@ ${this._getBiggestAwayWinCode()}
 |align=left| ${homeTeam} y ${awayTeam} (${moreGoalsMatches[i].goals})
 |${homeTeam}|| {{bandera|tamaño=15px|${moreGoalsMatches[i].homeTeam.flag}}}
 |${moreGoalsMatches[i].result.home} – ${moreGoalsMatches[i].result.away}
-|{{bandera|tamaño=15px|${moreGoalsMatches[i].homeTeam.flag}}} || ${awayTeam}
+|{{bandera|tamaño=15px|${moreGoalsMatches[i].awayTeam.flag}}} || ${awayTeam}
 |
 `;
     }
@@ -205,7 +205,7 @@ ${this._getBiggestAwayWinCode()}
 |align=left|${homeTeam} (+${biggestHomeWin[i].goals})
 |'''${homeTeam}'''|| {{bandera|tamaño=15px|${biggestHomeWin[i].homeTeam.flag}}}
 |${biggestHomeWin[i].result.home} – ${biggestHomeWin[i].result.away}
-|{{bandera|tamaño=15px|${biggestHomeWin[i].homeTeam.flag}}} || ${awayTeam}
+|{{bandera|tamaño=15px|${biggestHomeWin[i].awayTeam.flag}}} || ${awayTeam}
 |
 `;
     }
