@@ -14,6 +14,8 @@ export interface RecordResult {
   awayTeam: Team;
   result: Result;
   goals: number;
+  date: string;
+  matchday: number;
 }
 
 interface Records {

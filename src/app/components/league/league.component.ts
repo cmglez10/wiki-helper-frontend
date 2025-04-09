@@ -98,11 +98,13 @@ export class LeagueComponent {
         return '';
       }
 
+      const urlFem = this.searchData().section === Section.Femenino ? 'sec=f&' : '';
+
       const code = `
 <!-- '''LEER ESTO ANTES DE ACTUALIZAR:''' Por favor, no olvides actualizar la fecha a través del parámetro ({{parámetro|actualizado}}). -->
 {{#invoke:Football table|main|estilo=WDL
 |actualizado=completo
-|fuente=[https://www.futbol-regional.es/competicion.php?${this.searchData().group} Fútbol Regional]
+|fuente=[https://www.futbol-regional.es/competicion.php?${urlFem}${this.searchData().group} Fútbol Regional]
 
 <!--Definiciones de los equipos (wikilinks en tabla)-->
 ${this._teamDefinition()}

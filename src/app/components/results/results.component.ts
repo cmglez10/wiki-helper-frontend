@@ -108,12 +108,14 @@ export class ResultsComponent {
   }
 
   private _getCodeResults() {
+    const urlFem = this.searchData().section === Section.Femenino ? 'sec=f&' : '';
+
     return `
 === Tabla de resultados cruzados ===
 <center>
 
 {{#invoke:football results|main
-| fuente=[https://www.futbol-regional.es/competicion.php?${this.searchData().group} Fútbol Regional]
+| fuente=[https://www.futbol-regional.es/competicion.php?${urlFem}${this.searchData().group} Fútbol Regional]
 | estilo_partidos= FBR
 |actualizado=completo
 
@@ -173,12 +175,12 @@ ${this._getBiggestAwayWinCode()}
       if (i === 0) {
         code += `|style="border: 1px #aaa solid;" bgcolor=E6EEE6 rowspan=${moreGoalsMatches.length}|Más goles en un partido\n`;
       }
-      code += `|
+      code += `|${moreGoalsMatches[i].date}
 |align=left| ${homeTeam} y ${awayTeam} (${moreGoalsMatches[i].goals})
 |${homeTeam}|| {{bandera|tamaño=15px|${moreGoalsMatches[i].homeTeam.flag}}}
 |${moreGoalsMatches[i].result.home} – ${moreGoalsMatches[i].result.away}
 |{{bandera|tamaño=15px|${moreGoalsMatches[i].awayTeam.flag}}} || ${awayTeam}
-|
+|Jornada ${moreGoalsMatches[i].matchday}
 `;
     }
     return code;
@@ -201,12 +203,12 @@ ${this._getBiggestAwayWinCode()}
       if (i === 0) {
         code += `|style="border: 1px #aaa solid;" bgcolor=E6EEE6 rowspan=${biggestHomeWin.length}|Mayor victoria local\n`;
       }
-      code += `|
+      code += `|${biggestHomeWin[i].date}
 |align=left|${homeTeam} (+${biggestHomeWin[i].goals})
 |'''${homeTeam}'''|| {{bandera|tamaño=15px|${biggestHomeWin[i].homeTeam.flag}}}
 |${biggestHomeWin[i].result.home} – ${biggestHomeWin[i].result.away}
 |{{bandera|tamaño=15px|${biggestHomeWin[i].awayTeam.flag}}} || ${awayTeam}
-|
+|Jornada ${biggestHomeWin[i].matchday}
 `;
     }
 
@@ -230,12 +232,12 @@ ${this._getBiggestAwayWinCode()}
       if (i === 0) {
         code += `|style="border: 1px #aaa solid;" bgcolor=E6EEE6 rowspan=${biggestAwayWin.length}|Mayor victoria visitante\n`;
       }
-      code += `|
+      code += `|${biggestAwayWin[i].date}
 |align=left|${awayTeam} (+${biggestAwayWin[i].goals})
 |${homeTeam}|| {{bandera|tamaño=15px|${biggestAwayWin[i].homeTeam.flag}}}
 |${biggestAwayWin[i].result.home} – ${biggestAwayWin[i].result.away}
 |{{bandera|tamaño=15px|${biggestAwayWin[i].awayTeam.flag}}} || '''${awayTeam}'''
-|
+|Jornada ${biggestAwayWin[i].matchday}
 `;
     }
 
