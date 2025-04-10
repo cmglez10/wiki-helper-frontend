@@ -1,7 +1,7 @@
 import { Section } from '../../../constants/section.enum';
 
 export interface ISearchData {
-  groupId: number | null;
+  groupId: number;
   section: Section;
-  flags: boolean | null;
+  flags: boolean;
 }

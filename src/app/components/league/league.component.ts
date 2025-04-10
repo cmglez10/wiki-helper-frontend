@@ -32,7 +32,7 @@ import { SearchComponent } from '../search/search.component';
 })
 export class LeagueComponent {
   public readonly searchData: WritableSignal<ISearchData> = signal({
-    groupId: null,
+    groupId: 0,
     section: Section.Masculino,
     flags: false,
   });

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Section } from '../../constants/section.enum';
 import { LeagueTeam } from './interfaces/league.interface';
 import { PlayoffRound } from './interfaces/playoff.interface';
-import { ResultsData } from './interfaces/results.interface';
+import { Records, ResultsData } from './interfaces/results.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -23,5 +23,9 @@ export class HttpService {
 
   public getResults(groupId: number, section = Section.Masculino): Observable<ResultsData> {
     return this._http.get<ResultsData>(`${this._baseUrl}results/${groupId}/section/${section}`);
+  }
+
+  public getRecords(groupIds: number[], section = Section.Masculino): Observable<Records> {
+    return this._http.post<Records>(`${this._baseUrl}records/section/${section}`, { groupIds });
   }
 }

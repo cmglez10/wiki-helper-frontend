@@ -18,7 +18,7 @@ export interface RecordResult {
   matchday: number;
 }
 
-interface Records {
+export interface Records {
   biggestHomeWin: Array<RecordResult>;
   biggestAwayWin: Array<RecordResult>;
   moreGoalsMatch: Array<RecordResult>;

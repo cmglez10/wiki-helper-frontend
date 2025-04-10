@@ -28,15 +28,16 @@ export class SearchComponent {
   constructor() {
     this.form = new FormGroup<IFormSearch>({
       groupId: new FormControl<number | null>(null, [Validators.required]),
-      section: new FormControl<Section | null>(Section.Masculino, [Validators.required]),
+      section: new FormControl<Section>(Section.Masculino, [Validators.required]),
       flags: new FormControl<boolean>(false),
     });
   }
 
   public search(): void {
     this.cgiSearch.emit({
-      ...this.form.getRawValue(),
-      section: this.form.getRawValue().section ?? Section.Masculino,
+      groupId: this.form.value.groupId!,
+      section: this.form.value.section!,
+      flags: this.form.value.flags!,
     });
   }
 }
