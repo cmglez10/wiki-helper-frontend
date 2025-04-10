@@ -22,6 +22,10 @@ export const routes: Routes = [
         path: 'results',
         loadComponent: () => import('./components/results/results.component').then((m) => m.ResultsComponent),
       },
+      {
+        path: 'records',
+        loadComponent: () => import('./components/records/records.component').then((m) => m.RecordsComponent),
+      },
     ],
   },
 ];

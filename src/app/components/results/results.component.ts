@@ -10,7 +10,8 @@ import { Section } from '../../constants/section.enum';
 import { HttpService } from '../../services/http/http.service';
 import { ResultsData } from '../../services/http/interfaces/results.interface';
 import { Utils } from '../../utilities/utils';
-import { ISearchData, SearchComponent } from '../search/search.component';
+import { ISearchData } from '../search/interfaces/search-response.interface';
+import { SearchComponent } from '../search/search.component';
 
 @Component({
   selector: 'cgi-results',
@@ -27,7 +28,7 @@ import { ISearchData, SearchComponent } from '../search/search.component';
 })
 export class ResultsComponent {
   public readonly searchData: WritableSignal<ISearchData> = signal({
-    group: null,
+    groupId: null,
     section: Section.Masculino,
     flags: false,
   });
@@ -49,7 +50,7 @@ export class ResultsComponent {
   }
 
   public getResults(event: ISearchData): void {
-    let { group, section } = event;
+    let { groupId: group, section } = event;
     section = section || Section.Masculino;
     if (isNumber(group) && group > 0) {
       this.loading.set(true);
@@ -115,7 +116,7 @@ export class ResultsComponent {
 <center>
 
 {{#invoke:football results|main
-| fuente=[https://www.futbol-regional.es/competicion.php?${urlFem}${this.searchData().group} Fútbol Regional]
+| fuente=[https://www.futbol-regional.es/competicion.php?${urlFem}${this.searchData().groupId} Fútbol Regional]
 | estilo_partidos= FBR
 |actualizado=completo
 
@@ -154,7 +155,7 @@ ${this._getMoreGoalsMatchCode()}
 ${this._getBiggestHomeWinCode()}
 ${this._getBiggestAwayWinCode()}
 |}
-{{smaller|'''Fuente''': [https://www.futbol-regional.es/competicion.php?${this.searchData().group} Fútbol Regional]. Actualizado a '''{{fecha|${today.day}|${today.month}|${today.year}}}'''.}}
+{{smaller|'''Fuente''': [https://www.futbol-regional.es/competicion.php?${this.searchData().groupId} Fútbol Regional]. Actualizado a '''{{fecha|${today.day}|${today.month}|${today.year}}}'''.}}
 `;
   }
 

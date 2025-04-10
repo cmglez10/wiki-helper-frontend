@@ -5,17 +5,12 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Section } from '../../constants/section.enum';
+import { ISearchData } from './interfaces/search-response.interface';
 
 interface IFormSearch {
-  group: FormControl<number | null>;
+  groupId: FormControl<number | null>;
   section: FormControl<Section | null>;
   flags: FormControl<boolean | null>;
-}
-
-export interface ISearchData {
-  group: number | null;
-  section: Section | null;
-  flags: boolean | null;
 }
 
 @Component({
@@ -32,13 +27,16 @@ export class SearchComponent {
 
   constructor() {
     this.form = new FormGroup<IFormSearch>({
-      group: new FormControl<number | null>(null, [Validators.required]),
-      section: new FormControl<Section | null>(Section.Masculino),
+      groupId: new FormControl<number | null>(null, [Validators.required]),
+      section: new FormControl<Section | null>(Section.Masculino, [Validators.required]),
       flags: new FormControl<boolean>(false),
     });
   }
 
   public search(): void {
-    this.cgiSearch.emit(this.form.getRawValue());
+    this.cgiSearch.emit({
+      ...this.form.getRawValue(),
+      section: this.form.getRawValue().section ?? Section.Masculino,
+    });
   }
 }

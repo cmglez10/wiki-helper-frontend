@@ -8,7 +8,8 @@ import { DateTime } from 'luxon';
 import { Section } from '../../constants/section.enum';
 import { HttpService } from '../../services/http/http.service';
 import { Playoff, PlayoffMatch, PlayoffRound } from '../../services/http/interfaces/playoff.interface';
-import { ISearchData, SearchComponent } from '../search/search.component';
+import { ISearchData } from '../search/interfaces/search-response.interface';
+import { SearchComponent } from '../search/search.component';
 
 interface MatchResult {
   homeGoals: number;
@@ -23,7 +24,7 @@ interface MatchResult {
 })
 export class PlayoffComponent {
   public readonly searchData: WritableSignal<ISearchData> = signal({
-    group: null,
+    groupId: null,
     section: Section.Masculino,
     flags: false,
   });
@@ -43,7 +44,7 @@ export class PlayoffComponent {
   }
 
   public getPlayoff(event: ISearchData): void {
-    let { group, section } = event;
+    let { groupId: group, section } = event;
     section = section || Section.Masculino;
     if (isNumber(group) && group > 0) {
       this.loading.set(true);

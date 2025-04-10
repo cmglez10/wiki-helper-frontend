@@ -11,7 +11,8 @@ import { Section } from '../../constants/section.enum';
 import { HttpService } from '../../services/http/http.service';
 import { LeagueTeam } from '../../services/http/interfaces/league.interface';
 import { Utils } from '../../utilities/utils';
-import { ISearchData, SearchComponent } from '../search/search.component';
+import { ISearchData } from '../search/interfaces/search-response.interface';
+import { SearchComponent } from '../search/search.component';
 
 @Component({
   selector: 'cgi-league',
@@ -31,7 +32,7 @@ import { ISearchData, SearchComponent } from '../search/search.component';
 })
 export class LeagueComponent {
   public readonly searchData: WritableSignal<ISearchData> = signal({
-    group: null,
+    groupId: null,
     section: Section.Masculino,
     flags: false,
   });
@@ -104,7 +105,7 @@ export class LeagueComponent {
 <!-- '''LEER ESTO ANTES DE ACTUALIZAR:''' Por favor, no olvides actualizar la fecha a través del parámetro ({{parámetro|actualizado}}). -->
 {{#invoke:Football table|main|estilo=WDL
 |actualizado=completo
-|fuente=[https://www.futbol-regional.es/competicion.php?${urlFem}${this.searchData().group} Fútbol Regional]
+|fuente=[https://www.futbol-regional.es/competicion.php?${urlFem}${this.searchData().groupId} Fútbol Regional]
 
 <!--Definiciones de los equipos (wikilinks en tabla)-->
 ${this._teamDefinition()}
@@ -120,7 +121,7 @@ ${this._teamOrder()}
   }
 
   public getLeague(event: ISearchData): void {
-    let { group, section } = event;
+    let { groupId: group, section } = event;
     section = section || Section.Masculino;
     if (isNumber(group) && group > 0) {
       this.league.set([]);

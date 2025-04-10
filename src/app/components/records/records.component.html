@@ -1,0 +1,31 @@
+<div class="CgiRecords-container">
+  <div class="CgiRecords-searchContainer">
+    <cgi-search (cgiSearch)="getResults($event)"></cgi-search>
+  </div>
+
+  <div class="CgiRecords-selectedGroups">
+    <mat-table [dataSource]="groups()">
+      <ng-container matColumnDef="groupId">
+        <mat-header-cell *matHeaderCellDef>Grupo</mat-header-cell>
+        <mat-cell *matCellDef="let group">{{ group.groupId }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="section">
+        <mat-header-cell *matHeaderCellDef>Sección</mat-header-cell>
+        <mat-cell *matCellDef="let group"> <mat-icon [fontIcon]="group.sectionIcon" /></mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+        <mat-cell *matCellDef="let group; let i = index">
+          <button mat-icon-button (click)="removeGroup(i)">
+            <mat-icon fontIcon="delete" />
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+  </div>
+</div>
