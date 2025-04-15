@@ -1,57 +1,105 @@
 import { Component, inject, signal, WritableSignal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
-import { map } from 'lodash-es';
+import { filter, find, map } from 'lodash-es';
+import { finalize } from 'rxjs';
 import { Section } from '../../constants/section.enum';
 import { HttpService } from '../../services/http/http.service';
 import { Records } from '../../services/http/interfaces/results.interface';
+import { RecordsDisplayComponent } from '../records-display/records-display.component';
 import { ISearchData } from '../search/interfaces/search-response.interface';
 import { SearchComponent } from '../search/search.component';
 
-const sectionIcon: Record<Section, string> = {
-  [Section.Femenino]: 'female',
-  [Section.Masculino]: 'male',
-  [Section.Juvenil]: 'child_care',
-};
+export interface Group {
+  id: number;
+  name: string;
+}
 
-interface IGroup extends ISearchData {
-  sectionIcon: string;
+interface SearchSettings {
+  groups: Group[];
+  section: Section;
 }
 
 @Component({
   selector: 'cgi-records',
   templateUrl: './records.component.html',
   styleUrl: './records.component.scss',
-  imports: [MatButtonModule, MatIconModule, MatTableModule, SearchComponent],
+  imports: [
+    MatButtonModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    RecordsDisplayComponent,
+    SearchComponent,
+  ],
 })
 export class RecordsComponent {
-  public readonly groups = signal<IGroup[]>([]);
-  public displayedColumns = ['groupId', 'section', 'actions'];
+  public readonly searchOptions = signal<SearchSettings>({
+    groups: [],
+    section: Section.Masculino,
+  });
+
+  public displayedColumns = ['groupId', 'name', 'actions'];
   public readonly loading = signal(false);
   public readonly results: WritableSignal<Records | null> = signal(null);
 
   private readonly _httpService: HttpService = inject(HttpService);
 
-  public getResults(event: ISearchData): void {
-    this.groups.update((groups) => [...groups, { ...event, sectionIcon: sectionIcon[event.section] }]);
+  public addGroup(event: ISearchData): void {
+    if (this.searchOptions().groups.length === 0) {
+      this.searchOptions.update((groups) => ({ ...groups, section: event.section }));
+    }
+    if (!find(this.searchOptions().groups, { id: event.groupId })) {
+      this.searchOptions.update((searchOptions) => ({
+        ...searchOptions,
+        groups: [
+          ...searchOptions.groups,
+          {
+            id: event.groupId,
+            name: '',
+          },
+        ],
+      }));
+      this.results.set(null);
+    }
   }
 
-  public removeGroup(index: number): void {
-    this.groups.update((groups) => {
-      const newGroups = [...groups];
-      newGroups.splice(index, 1);
-      return newGroups;
+  public removeGroup(groupId: number): void {
+    this.searchOptions.update((searchOptions) => {
+      return { ...searchOptions, groups: filter(searchOptions.groups, (group) => group.id !== groupId) };
     });
+    this.results.set(null);
   }
 
   public getRecords(): void {
-    const groupIds = map(this.groups(), (group) => group.groupId!);
+    const groupIds = map(this.searchOptions().groups, 'id');
     this.loading.set(true);
     this.results.set(null);
-    this._httpService.getRecords(groupIds, this.groups()[0].section).subscribe((results) => {
-      this.results.set(results);
-      this.loading.set(false);
+    this._httpService
+      .getRecords(groupIds, this.searchOptions().section)
+      .pipe(
+        finalize(() => {
+          this.loading.set(false);
+        })
+      )
+      .subscribe((results) => {
+        this.results.set(results);
+      });
+  }
+
+  public updateGroupName(groupId: number, event: Event): void {
+    this.searchOptions.update((searchOptions) => {
+      const group = find(searchOptions.groups, { id: groupId });
+      if (group) {
+        group.name = (event.target as HTMLInputElement)?.value as string;
+      }
+      return { ...searchOptions };
     });
   }
 }

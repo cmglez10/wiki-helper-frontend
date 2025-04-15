@@ -24,12 +24,11 @@
   }
 
   &-code,
-  &-recordsCode {
+  &-recordsDisplay {
     flex: 1 0 500px;
   }
 
-  &-codeInput,
-  &-recordsCodeInput {
+  &-codeInput {
     width: 100%;
     height: 100%;
   }

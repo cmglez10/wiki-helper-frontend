@@ -16,6 +16,7 @@ export interface RecordResult {
   goals: number;
   date: string;
   matchday: number;
+  groupId: number;
 }
 
 export interface Records {

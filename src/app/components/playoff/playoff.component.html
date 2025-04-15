@@ -13,7 +13,14 @@
     @if (playoffs().length && wikiCode().length) {
       <mat-form-field class="CgiPlayoff-code">
         <mat-label>Wiki code</mat-label>
-        <textarea [value]="wikiCode()" cdkTextareaAutosize class="CgiPlayoff-codeInput" matInput readonly></textarea>
+        <textarea
+          [value]="wikiCode()"
+          cdkTextareaAutosize
+          [cdkAutosizeMaxRows]="10"
+          class="CgiPlayoff-codeInput"
+          matInput
+          readonly
+        ></textarea>
       </mat-form-field>
     }
   </div>

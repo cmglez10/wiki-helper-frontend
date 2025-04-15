@@ -23,17 +23,7 @@
         ></textarea>
       </mat-form-field>
 
-      <mat-form-field class="CgiResults-recordsCode">
-        <mat-label>Records code</mat-label>
-        <textarea
-          [value]="recordsCode()"
-          cdkTextareaAutosize
-          [cdkAutosizeMaxRows]="10"
-          class="CgiResults-recordsCodeInput"
-          matInput
-          readonly
-        ></textarea>
-      </mat-form-field>
+      <cgi-records-display [cgiRecordsDisplayRecords]="results()!.records" class="CgiResults-recordsDisplay" />
     }
   </div>
 </div>

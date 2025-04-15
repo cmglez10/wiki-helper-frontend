@@ -13,7 +13,14 @@
     @if (wikiCode().length) {
       <mat-form-field class="CgiLeague-code">
         <mat-label>Wiki code</mat-label>
-        <textarea [value]="wikiCode()" cdkTextareaAutosize class="CgiLeague-codeInput" matInput readonly></textarea>
+        <textarea
+          [value]="wikiCode()"
+          cdkTextareaAutosize
+          [cdkAutosizeMaxRows]="10"
+          class="CgiLeague-codeInput"
+          matInput
+          readonly
+        ></textarea>
       </mat-form-field>
     }
     @if (league().length) {

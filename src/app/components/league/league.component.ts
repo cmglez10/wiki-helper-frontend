@@ -1,3 +1,4 @@
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { Component, computed, inject, Signal, signal, WritableSignal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,6 +20,7 @@ import { SearchComponent } from '../search/search.component';
   templateUrl: './league.component.html',
   styleUrl: './league.component.scss',
   imports: [
+    CdkTextareaAutosize,
     MatButtonModule,
     MatButtonToggleModule,
     MatFormFieldModule,

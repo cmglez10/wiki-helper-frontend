@@ -20,7 +20,7 @@ interface MatchResult {
   selector: 'cgi-playoff',
   templateUrl: './playoff.component.html',
   styleUrl: './playoff.component.scss',
-  imports: [SearchComponent, MatProgressSpinnerModule, MatFormFieldModule, MatInputModule, CdkTextareaAutosize],
+  imports: [CdkTextareaAutosize, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule, SearchComponent],
 })
 export class PlayoffComponent {
   public readonly searchData: WritableSignal<ISearchData> = signal({
