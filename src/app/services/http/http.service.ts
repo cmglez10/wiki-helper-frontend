@@ -11,7 +11,7 @@ import { Records, ResultsData } from './interfaces/results.interface';
 })
 export class HttpService {
   private readonly _http: HttpClient = inject(HttpClient);
-  private readonly _baseUrl = 'http://localhost:3000/';
+  private readonly _baseUrl = 'http://localhost:3003/';
 
   public getLeague(groupId: number, section = Section.Masculino): Observable<LeagueTeam[]> {
     return this._http.get<LeagueTeam[]>(`${this._baseUrl}league/${groupId}/section/${section}`);

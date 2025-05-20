@@ -1,8 +1,10 @@
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { Component, computed, inject, Signal, signal, WritableSignal } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -21,8 +23,10 @@ import { SearchComponent } from '../search/search.component';
   styleUrl: './league.component.scss',
   imports: [
     CdkTextareaAutosize,
+    FormsModule,
     MatButtonModule,
     MatButtonToggleModule,
+    MatCheckboxModule,
     MatFormFieldModule,
     MatInputModule,
     MatProgressSpinnerModule,
@@ -41,6 +45,7 @@ export class LeagueComponent {
   public readonly league: WritableSignal<LeagueTeam[]> = signal([]);
   public readonly wikiCode: Signal<string>;
   public readonly loading = signal(false);
+  public showCompleteTable: FormControl = new FormControl(false);
   public readonly displayedColumns = [
     'position',
     'shield',
@@ -60,6 +65,7 @@ export class LeagueComponent {
   private readonly _teamDefinition: Signal<string>;
   private readonly _teamTable: Signal<string>;
   private readonly _teamOrder: Signal<string>;
+  private readonly _showCompleteTableValue = toSignal(this.showCompleteTable.valueChanges, { initialValue: false });
 
   constructor() {
     this._teamDefinition = computed(() => {
@@ -103,7 +109,10 @@ export class LeagueComponent {
 
       const urlFem = this.searchData().section === Section.Femenino ? 'sec=f&' : '';
 
-      const code = `
+      let code = '';
+
+      if (this._showCompleteTableValue()) {
+        code += `
 <!-- '''LEER ESTO ANTES DE ACTUALIZAR:''' Por favor, no olvides actualizar la fecha a través del parámetro ({{parámetro|actualizado}}). -->
 {{#invoke:Football table|main|estilo=WDL
 |actualizado=completo
@@ -112,12 +121,22 @@ export class LeagueComponent {
 <!--Definiciones de los equipos (wikilinks en tabla)-->
 ${this._teamDefinition()}
 
-<!--Actualizar los resultados de los equipos aquí, (no hace falta modificar las posiciones en está sección, el modelo lo hace automaticamente). No olvides actualizar la fecha a través del parámetro actualizado-->
+`;
+      }
+
+      code += `<!--Actualizar los resultados de los equipos aquí, (no hace falta modificar las posiciones en está sección, el modelo lo hace automaticamente). No olvides actualizar la fecha a través del parámetro actualizado-->
 ${this._teamTable()}
 
 <!--Actualizar las posiciones de los equipos aquí-->
 ${this._teamOrder()}
 `;
+
+      if (this._showCompleteTableValue()) {
+        code += `
+}}
+        `;
+      }
+
       return code;
     });
   }
