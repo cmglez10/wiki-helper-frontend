@@ -1,0 +1,44 @@
+.CgiMultiSearch {
+  &-searchContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &-noGroups {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1 1 auto;
+    gap: 1rem;
+  }
+
+  &-selectedGroups {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  &-selectedGroupsTable {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  &-actionsCell,
+  &-groupIdHeaderCell,
+  &-groupIdCell,
+  &-nameCell,
+  &-nameHeaderCell {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &-nameCell,
+  &-nameHeaderCell {
+    min-width: 14rem;
+    padding: 0.5rem;
+  }
+}

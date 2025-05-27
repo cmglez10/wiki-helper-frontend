@@ -1,21 +1,21 @@
-<div class="CgiRecords-searchContainer">
+<div class="CgiMultiSearch-searchContainer">
   <cgi-search
     (cgiSearch)="addGroup($event)"
     [cgiSearchDisableSectionSelector]="searchOptions().groups.length > 0"
   ></cgi-search>
 </div>
 
-<div class="CgiRecords-selectedGroups">
-  <div class="CgiRecords-selectedGroupsTable">
+<div class="CgiMultiSearch-selectedGroups">
+  <div class="CgiMultiSearch-selectedGroupsTable">
     <mat-table [dataSource]="searchOptions().groups">
       <ng-container matColumnDef="groupId">
-        <mat-header-cell *matHeaderCellDef class="CgiRecords-groupIdHeaderCell">Id</mat-header-cell>
-        <mat-cell *matCellDef="let group" class="CgiRecords-groupIdCell">{{ group.id }}</mat-cell>
+        <mat-header-cell *matHeaderCellDef class="CgiMultiSearch-groupIdHeaderCell">Id</mat-header-cell>
+        <mat-cell *matCellDef="let group" class="CgiMultiSearch-groupIdCell">{{ group.id }}</mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="name">
-        <mat-header-cell *matHeaderCellDef class="CgiRecords-nameHeaderCell">Nombre</mat-header-cell>
-        <mat-cell *matCellDef="let group" class="CgiRecords-nameCell">
+        <mat-header-cell *matHeaderCellDef class="CgiMultiSearch-nameHeaderCell">Nombre</mat-header-cell>
+        <mat-cell *matCellDef="let group" class="CgiMultiSearch-nameCell">
           <mat-form-field>
             <input matInput type="text" placeholder="Nombre del grupo" (change)="updateGroupName(group.id, $event)" />
           </mat-form-field>
@@ -24,7 +24,7 @@
 
       <ng-container matColumnDef="actions">
         <mat-header-cell *matHeaderCellDef></mat-header-cell>
-        <mat-cell *matCellDef="let group" class="CgiRecords-actionsCell">
+        <mat-cell *matCellDef="let group" class="CgiMultiSearch-actionsCell">
           <button mat-icon-button (click)="removeGroup(group.id)">
             <mat-icon fontIcon="delete" />
           </button>
@@ -35,7 +35,7 @@
       <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
     </mat-table>
     @if (searchOptions().groups.length === 0) {
-      <div class="CgiRecords-noGroups">
+      <div class="CgiMultiSearch-noGroups">
         <mat-icon fontIcon="info" />
         <span>No hay grupos seleccionados</span>
       </div>
