@@ -1,51 +1,9 @@
 <div class="CgiRecords-container">
-  <div class="CgiRecords-searchContainer">
-    <cgi-search
-      (cgiSearch)="addGroup($event)"
-      [cgiSearchDisableSectionSelector]="searchOptions().groups.length > 0"
-    ></cgi-search>
-  </div>
+  <cgi-multi-search [(searchOptions)]="searchOptions" />
 
-  <div class="CgiRecords-selectedGroups">
-    <div class="CgiRecords-selectedGroupsTable">
-      <mat-table [dataSource]="searchOptions().groups">
-        <ng-container matColumnDef="groupId">
-          <mat-header-cell *matHeaderCellDef class="CgiRecords-groupIdHeaderCell">Id</mat-header-cell>
-          <mat-cell *matCellDef="let group" class="CgiRecords-groupIdCell">{{ group.id }}</mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="name">
-          <mat-header-cell *matHeaderCellDef class="CgiRecords-nameHeaderCell">Nombre</mat-header-cell>
-          <mat-cell *matCellDef="let group" class="CgiRecords-nameCell">
-            <mat-form-field>
-              <input matInput type="text" placeholder="Nombre del grupo" (change)="updateGroupName(group.id, $event)" />
-            </mat-form-field>
-          </mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="actions">
-          <mat-header-cell *matHeaderCellDef></mat-header-cell>
-          <mat-cell *matCellDef="let group" class="CgiRecords-actionsCell">
-            <button mat-icon-button (click)="removeGroup(group.id)">
-              <mat-icon fontIcon="delete" />
-            </button>
-          </mat-cell>
-        </ng-container>
-
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
-      </mat-table>
-      @if (searchOptions().groups.length === 0) {
-        <div class="CgiRecords-noGroups">
-          <mat-icon fontIcon="info" />
-          <span>No hay grupos seleccionados</span>
-        </div>
-      }
-    </div>
-    <button mat-flat-button color="primary" (click)="getRecords()" [disabled]="searchOptions().groups.length === 0">
-      Buscar Récords
-    </button>
-  </div>
+  <button mat-flat-button color="primary" (click)="getRecords()" [disabled]="searchOptions().groups.length === 0">
+    Buscar Récords
+  </button>
 
   @if (loading()) {
     <div class="CgiResults-loading">

@@ -5,7 +5,7 @@ import { MatInputModule } from '@angular/material/input';
 import { find } from 'lodash-es';
 import { DateTime } from 'luxon';
 import { Records } from '../../services/http/interfaces/results.interface';
-import { Group } from '../records/records.component';
+import { Group } from '../multi-search/multi-search.component';
 
 @Component({
   selector: 'cgi-records-display',
