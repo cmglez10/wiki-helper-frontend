@@ -1,7 +1,7 @@
 export interface LeagueTeam {
   position: number;
   name: string;
-  completeName: string;
+  teamInfo: TeamInfo;
   points: number;
   played: number;
   won: number;
@@ -11,4 +11,10 @@ export interface LeagueTeam {
   ga: number;
   gd: number;
   sanction: number;
+}
+
+export interface TeamInfo {
+  completeName: string;
+  region: string;
+  town: string;
 }

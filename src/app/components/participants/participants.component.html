@@ -1,0 +1,17 @@
+<div class="CgiParticipants-container">
+  <cgi-multi-search [(searchOptions)]="searchOptions" />
+
+  <button mat-flat-button color="primary" (click)="getParticipants()" [disabled]="searchOptions().groups.length === 0">
+    Buscar Participantes
+  </button>
+
+  @if (loading()) {
+    <div class="CgiResults-loading">
+      <mat-spinner diameter="100"></mat-spinner>
+    </div>
+  }
+
+  <div class="CgiParticipants-results">
+    @if (results()) {}
+  </div>
+</div>

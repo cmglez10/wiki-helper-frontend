@@ -72,7 +72,7 @@ export class LeagueComponent {
       let res = '';
       for (const team of this.league()) {
         res += `
-|nombre_${Utils.getInitials(team.name)}=[[${team.completeName}|${team.name}]]`;
+|nombre_${Utils.getInitials(team.name)}=[[${team.teamInfo.completeName}|${team.name}]]`;
       }
       return res;
     });

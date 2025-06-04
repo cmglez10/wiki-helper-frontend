@@ -28,4 +28,8 @@ export class HttpService {
   public getRecords(groupIds: number[], section = Section.Masculino): Observable<Records> {
     return this._http.post<Records>(`${this._baseUrl}records/section/${section}`, { groupIds });
   }
+
+  public getParticipants(groupIds: number[], section = Section.Masculino): Observable<Records> {
+    return this._http.post<Records>(`${this._baseUrl}participants/section/${section}`, { groupIds });
+  }
 }
