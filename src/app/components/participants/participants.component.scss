@@ -13,4 +13,39 @@
     align-items: center;
     flex: 1 1 auto;
   }
+
+  &-results {
+    display: flex;
+    gap: 5rem;
+  }
+
+  &-table {
+    background-color: var(--mat-table-background-color, var(--mat-sys-surface));
+
+    th,
+    td {
+      padding: 5px 16px;
+      border-bottom-color: var(--mat-table-row-item-outline-color, var(--mat-sys-outline, rgba(0, 0, 0, 0.12)));
+      border-bottom-width: var(--mat-table-row-item-outline-width, 1px);
+      border-bottom-style: solid;
+    }
+  }
+
+  &-code {
+    flex: 1 0 950px;
+  }
+
+  &-checkbox {
+    margin-bottom: 1rem;
+  }
+
+  &-field {
+    flex: 1 0 100%;
+    display: flex;
+  }
+
+  &-codeInput {
+    width: 100%;
+    height: 100%;
+  }
 }

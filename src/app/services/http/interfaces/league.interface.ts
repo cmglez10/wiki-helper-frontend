@@ -1,3 +1,5 @@
+import { TeamInfo } from './team.interface';
+
 export interface LeagueTeam {
   position: number;
   name: string;
@@ -11,10 +13,4 @@ export interface LeagueTeam {
   ga: number;
   gd: number;
   sanction: number;
-}
-
-export interface TeamInfo {
-  completeName: string;
-  region: string;
-  town: string;
 }

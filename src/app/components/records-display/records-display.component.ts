@@ -77,9 +77,9 @@ ${this._getBiggestAwayWinCode()}
       code += `${this.cgiRecordsDisplayGroups().length > 1 ? '|' + this._getGroupName(moreGoalsMatches[i].groupId) : ''}
 |${moreGoalsMatches[i].date}
 |align=left| ${homeTeam} y ${awayTeam} (${moreGoalsMatches[i].goals})
-|${homeTeam}|| {{bandera|tamaño=15px|${moreGoalsMatches[i].homeTeam.flag}}}
+|${homeTeam}|| {{bandera|tamaño=15px|${moreGoalsMatches[i].homeTeam.region}}}
 |${moreGoalsMatches[i].result.home} – ${moreGoalsMatches[i].result.away}
-|{{bandera|tamaño=15px|${moreGoalsMatches[i].awayTeam.flag}}} || ${awayTeam}
+|{{bandera|tamaño=15px|${moreGoalsMatches[i].awayTeam.region}}} || ${awayTeam}
 |Jornada ${moreGoalsMatches[i].matchday}
 `;
     }
@@ -106,9 +106,9 @@ ${this._getBiggestAwayWinCode()}
       code += `${this.cgiRecordsDisplayGroups().length > 1 ? '|' + this._getGroupName(biggestHomeWin[i].groupId) : ''}
 |${biggestHomeWin[i].date}
 |align=left|${homeTeam} (+${biggestHomeWin[i].goals})
-|'''${homeTeam}'''|| {{bandera|tamaño=15px|${biggestHomeWin[i].homeTeam.flag}}}
+|'''${homeTeam}'''|| {{bandera|tamaño=15px|${biggestHomeWin[i].homeTeam.region}}}
 |${biggestHomeWin[i].result.home} – ${biggestHomeWin[i].result.away}
-|{{bandera|tamaño=15px|${biggestHomeWin[i].awayTeam.flag}}} || ${awayTeam}
+|{{bandera|tamaño=15px|${biggestHomeWin[i].awayTeam.region}}} || ${awayTeam}
 |Jornada ${biggestHomeWin[i].matchday}
 `;
     }
@@ -136,9 +136,9 @@ ${this._getBiggestAwayWinCode()}
       code += `${this.cgiRecordsDisplayGroups().length > 1 ? '|' + this._getGroupName(biggestAwayWin[i].groupId) : ''}
 |${biggestAwayWin[i].date}
 |align=left|${awayTeam} (+${biggestAwayWin[i].goals})
-|${homeTeam}|| {{bandera|tamaño=15px|${biggestAwayWin[i].homeTeam.flag}}}
+|${homeTeam}|| {{bandera|tamaño=15px|${biggestAwayWin[i].homeTeam.region}}}
 |${biggestAwayWin[i].result.home} – ${biggestAwayWin[i].result.away}
-|{{bandera|tamaño=15px|${biggestAwayWin[i].awayTeam.flag}}} || '''${awayTeam}'''
+|{{bandera|tamaño=15px|${biggestAwayWin[i].awayTeam.region}}} || '''${awayTeam}'''
 |Jornada ${biggestAwayWin[i].matchday}
 `;
     }

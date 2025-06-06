@@ -1,8 +1,4 @@
-export interface Team {
-  completeName: string;
-  name: string;
-  flag: string;
-}
+import { Team } from './team.interface';
 
 export interface Result {
   home: number;

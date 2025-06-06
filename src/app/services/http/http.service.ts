@@ -5,6 +5,7 @@ import { Section } from '../../constants/section.enum';
 import { LeagueTeam } from './interfaces/league.interface';
 import { PlayoffRound } from './interfaces/playoff.interface';
 import { Records, ResultsData } from './interfaces/results.interface';
+import { Team } from './interfaces/team.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -29,7 +30,7 @@ export class HttpService {
     return this._http.post<Records>(`${this._baseUrl}records/section/${section}`, { groupIds });
   }
 
-  public getParticipants(groupIds: number[], section = Section.Masculino): Observable<Records> {
-    return this._http.post<Records>(`${this._baseUrl}participants/section/${section}`, { groupIds });
+  public getParticipants(groupIds: number[], section = Section.Masculino): Observable<Array<Team>> {
+    return this._http.post<Array<Team>>(`${this._baseUrl}participants/section/${section}`, { groupIds });
   }
 }
