@@ -54,6 +54,7 @@ export class ParticipantsComponent {
   public readonly participants: WritableSignal<Array<Team> | null> = signal(null);
   public readonly participantsGrouped: Signal<RegionsGrouped[] | null> = signal(null);
   public readonly wikiCode: Signal<string>;
+  public readonly wikiCodeGrouped: Signal<string>;
 
   private readonly _httpService: HttpService = inject(HttpService);
 
@@ -65,7 +66,7 @@ export class ParticipantsComponent {
       return this._groupByCount(this._groupByRegion(this.participants()!));
     });
 
-    this.wikiCode = computed(() => {
+    this.wikiCodeGrouped = computed(() => {
       if (!this.participants()) {
         return '';
       }
@@ -81,6 +82,16 @@ export class ParticipantsComponent {
 
       code += '|}';
       return code;
+    });
+
+    this.wikiCode = computed(() => {
+      if (!this.participants()) {
+        return '';
+      }
+      if (this.participants()!.length === 0) {
+        return 'No participants found.';
+      }
+      return this._getCodeForNotGroupedTeams();
     });
   }
 
@@ -98,6 +109,27 @@ export class ParticipantsComponent {
       .subscribe((fetchedParticipants) => {
         this.participants.set(sortBy(fetchedParticipants, 'name'));
       });
+  }
+
+  private _getCodeForNotGroupedTeams(): string {
+    let code = `{| class="sortable collapsible collapsed" border=1 cellpadding="2" cellspacing="0" style="background: #f9f9f9; border: 1px #aaa solid; border-collapse: collapse; font-size: 85%;"
+|- style="background:#DDDDDD; color:black"
+!width=400| Equipo
+!width=300| Localidad
+!width=80| Fundación
+!width=180| Estadio
+`;
+    for (const team of this.participants()!) {
+      code += `|-
+|'''[[${team.completeName}|${team.name}]]'''
+|{{bandera|${team.region}|tamaño=15px}} [[${team.town}]]
+|${team.foundationYear}
+|${team.ground}
+`;
+    }
+    code += `|}`;
+
+    return code;
   }
 
   private _getCodeHeadersForGroupedTeams(): string {
