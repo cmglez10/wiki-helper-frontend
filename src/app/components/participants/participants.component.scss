@@ -14,9 +14,11 @@
     flex: 1 1 auto;
   }
 
-  &-results {
+  &-results,
+  &-wikiLocation {
     display: flex;
     gap: 5rem;
+    padding: 2rem;
   }
 
   &-table {

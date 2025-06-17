@@ -4,6 +4,7 @@ export interface TeamInfo {
   town: string;
   foundationYear: string;
   ground: string;
+  coordinates?: Array<string>;
 }
 
 export interface Team extends TeamInfo {

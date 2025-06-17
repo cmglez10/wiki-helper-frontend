@@ -11,48 +11,74 @@
     </div>
   }
 
-  <div class="CgiParticipants-results">
-    @if (participantsGrouped()) {
-      <table class="CgiParticipants-table" [cellPadding]="0" [cellSpacing]="0">
-        <thead>
-          <tr>
-            <th>Región</th>
-            <th>Equipo</th>
-            <th>Localidad</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (countGroup of participantsGrouped(); track $index) {
-            @for (regionParticipants of countGroup.regions; track regionParticipants.region) {
-              @for (participant of regionParticipants.teams; track participant; let first = $first) {
+  @if (results() && !loading()) {
+    <mat-tab-group>
+      <mat-tab label="Participantes">
+        <div class="CgiParticipants-results">
+          <mat-slide-toggle class="CgiParticipants-toggle" [formControl]="groupByRegion" labelPosition="before">
+            Agrupar por comunidad
+          </mat-slide-toggle>
+          @if (groupByRegion.value && participantsGrouped()) {
+            <table class="CgiParticipants-table" [cellPadding]="0" [cellSpacing]="0">
+              <thead>
                 <tr>
-                  @if (first) {
-                    <td [attr.rowspan]="regionParticipants.teams.length">{{ regionParticipants.region }}</td>
-                  }
-                  <td><img [src]="participant.shield" /> {{ participant.name }}</td>
-                  <td>{{ participant.town }}</td>
+                  <th>Región</th>
+                  <th>Equipo</th>
+                  <th>Localidad</th>
                 </tr>
-              }
-            }
+              </thead>
+              <tbody>
+                @for (countGroup of participantsGrouped(); track $index) {
+                  @for (regionParticipants of countGroup.regions; track regionParticipants.region) {
+                    @for (participant of regionParticipants.teams; track participant; let first = $first) {
+                      <tr>
+                        @if (first) {
+                          <td [attr.rowspan]="regionParticipants.teams.length">{{ regionParticipants.region }}</td>
+                        }
+                        <td><img [src]="participant.shield" /> {{ participant.name }}</td>
+                        <td>{{ participant.town }}</td>
+                      </tr>
+                    }
+                  }
+                }
+              </tbody>
+            </table>
           }
-        </tbody>
-      </table>
-    }
 
-    @if (wikiCode().length) {
-      <div class="CgiParticipants-code">
-        <mat-form-field class="CgiParticipants-field">
-          <mat-label>Wiki code</mat-label>
-          <textarea
-            [value]="wikiCode()"
-            cdkTextareaAutosize
-            [cdkAutosizeMaxRows]="10"
-            class="CgiParticipants-codeInput"
-            matInput
-            readonly
-          ></textarea>
-        </mat-form-field>
-      </div>
-    }
-  </div>
+          @if (wikiCode().length) {
+            <div class="CgiParticipants-code">
+              <mat-form-field class="CgiParticipants-field">
+                <mat-label>Wiki code</mat-label>
+                <textarea
+                  [value]="wikiCode()"
+                  cdkTextareaAutosize
+                  [cdkAutosizeMaxRows]="10"
+                  class="CgiParticipants-codeInput"
+                  matInput
+                  readonly
+                ></textarea>
+              </mat-form-field>
+            </div>
+          }
+        </div>
+      </mat-tab>
+      <mat-tab label="Localización">
+        @if (wikiLocation().length) {
+          <div class="CgiParticipants-wikiLocation">
+            <mat-form-field class="CgiParticipants-field">
+              <mat-label>Localizaciones</mat-label>
+              <textarea
+                [value]="wikiLocation()"
+                cdkTextareaAutosize
+                [cdkAutosizeMaxRows]="10"
+                class="CgiParticipants-codeInput"
+                matInput
+                readonly
+              ></textarea>
+            </mat-form-field>
+          </div>
+        }
+      </mat-tab>
+    </mat-tab-group>
+  }
 </div>

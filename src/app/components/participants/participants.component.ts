@@ -1,11 +1,15 @@
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { Component, computed, inject, Signal, signal, WritableSignal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTabsModule } from '@angular/material/tabs';
 import { groupBy, map, orderBy, reduce, sortBy, values } from 'lodash-es';
-import { finalize } from 'rxjs';
+import { finalize, startWith } from 'rxjs';
 import { Section } from '../../constants/section.enum';
 import { HttpService } from '../../services/http/http.service';
 import { Team } from '../../services/http/interfaces/team.interface';
@@ -41,7 +45,10 @@ interface TableRowRequest {
     MatFormFieldModule,
     MatInputModule,
     MatProgressSpinnerModule,
+    MatSlideToggleModule,
     MultiSearchComponent,
+    ReactiveFormsModule,
+    MatTabsModule,
   ],
 })
 export class ParticipantsComponent {
@@ -53,12 +60,18 @@ export class ParticipantsComponent {
   public readonly loading = signal(false);
   public readonly participants: WritableSignal<Array<Team> | null> = signal(null);
   public readonly participantsGrouped: Signal<RegionsGrouped[] | null> = signal(null);
-  public readonly wikiCode: Signal<string>;
+  public readonly wikiCodeNotGrouped: Signal<string>;
   public readonly wikiCodeGrouped: Signal<string>;
+  public readonly wikiLocation: Signal<string>;
+  public readonly wikiCode: Signal<string>;
+  public readonly groupByRegion: FormControl<boolean | null>;
+  public readonly results: Signal<boolean>;
 
   private readonly _httpService: HttpService = inject(HttpService);
 
   constructor() {
+    this.groupByRegion = new FormControl(false);
+
     this.participantsGrouped = computed(() => {
       if (!this.participants() || this.participants()!.length === 0) {
         return null;
@@ -84,7 +97,7 @@ export class ParticipantsComponent {
       return code;
     });
 
-    this.wikiCode = computed(() => {
+    this.wikiCodeNotGrouped = computed(() => {
       if (!this.participants()) {
         return '';
       }
@@ -92,6 +105,35 @@ export class ParticipantsComponent {
         return 'No participants found.';
       }
       return this._getCodeForNotGroupedTeams();
+    });
+
+    const groupByRegionValue = toSignal(this.groupByRegion.valueChanges.pipe(startWith(this.groupByRegion.value)));
+
+    this.wikiCode = computed(() => {
+      if (groupByRegionValue()) {
+        return this.wikiCodeGrouped();
+      } else {
+        return this.wikiCodeNotGrouped();
+      }
+    });
+
+    this.wikiLocation = computed(() => {
+      if (!this.participants() || this.participants()!.length === 0) {
+        return '';
+      }
+
+      let code = `{{Mapa de localización+ |La Rioja|width=600 |float=right |caption=Localización de los equipos. |border=lightgrey |places=\n`;
+      for (const team of this.participants()!) {
+        if (team.coordinates) {
+          code += `{{Geolocalización|La Rioja|${team.coordinates[0]}|${team.coordinates[1]}|${team.completeName}{{!}}<small>${team.name}</small>|15|e}}\n`;
+        }
+      }
+      code += `}}\n`;
+      return code;
+    });
+
+    this.results = computed(() => {
+      return !!this.participants() && this.participants()!.length > 0;
     });
   }
 
