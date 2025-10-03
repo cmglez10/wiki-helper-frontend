@@ -33,21 +33,21 @@
     "@angular/compiler-cli": "^20.3.3",
     "@types/jasmine": "~5.1.0",
     "@types/lodash-es": "^4.17.12",
-    "@typescript-eslint/eslint-plugin": "^8.24.1",
+    "@typescript-eslint/eslint-plugin": "^8.45.0",
     "angular-eslint": "^19.1.0",
     "eslint": "^8.57.1",
-    "eslint-config-prettier": "^10.0.1",
+    "eslint-config-prettier": "^10.1.8",
     "eslint-plugin": "^1.0.1",
-    "eslint-plugin-prettier": "^5.2.3",
+    "eslint-plugin-prettier": "^5.5.4",
     "jasmine-core": "~5.5.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "prettier": "^3.5.1",
-    "prettier-eslint": "^16.3.0",
+    "prettier": "^3.6.2",
+    "prettier-eslint": "^16.4.2",
     "typescript": "~5.9.3",
-    "typescript-eslint": "^8.24.1"
+    "typescript-eslint": "^8.45.0"
   }
 }
