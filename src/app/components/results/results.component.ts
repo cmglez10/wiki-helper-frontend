@@ -6,12 +6,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { isNumber, join, map } from 'lodash-es';
 import { Section } from '../../constants/section.enum';
-import { HttpService } from '../../services/http/http.service';
+import { FreApiService } from '../../services/fre-api/fre-api.service';
 import { ResultsData } from '../../services/http/interfaces/results.interface';
 import { Utils } from '../../utilities/utils';
 import { RecordsDisplayComponent } from '../records-display/records-display.component';
-import { ISearchData } from '../search/interfaces/search-response.interface';
+import { ISearchData, ISearchDataFre, SearchOrigin } from '../search/interfaces/search-response.interface';
 import { SearchComponent } from '../search/search.component';
+import { isSearchDataFrf } from '../search/search.utils';
 
 @Component({
   selector: 'cgi-results',
@@ -28,7 +29,8 @@ import { SearchComponent } from '../search/search.component';
   ],
 })
 export class ResultsComponent {
-  public readonly searchData: WritableSignal<ISearchData> = signal({
+  public readonly searchData: WritableSignal<ISearchDataFre> = signal({
+    origin: SearchOrigin.FRE,
     groupId: 0,
     section: Section.Masculino,
     flags: false,
@@ -37,7 +39,7 @@ export class ResultsComponent {
   public readonly wikiCode: Signal<string>;
   public readonly results: WritableSignal<ResultsData | null> = signal(null);
 
-  private readonly _httpService: HttpService = inject(HttpService);
+  private readonly _httpService: FreApiService = inject(FreApiService);
 
   constructor() {
     this.wikiCode = computed(() => {
@@ -46,16 +48,20 @@ export class ResultsComponent {
   }
 
   public getResults(event: ISearchData): void {
-    let { groupId: group, section } = event;
-    section = section || Section.Masculino;
-    if (isNumber(group) && group > 0) {
-      this.loading.set(true);
-      this.results.set(null);
-      this._httpService.getResults(group, section).subscribe((results) => {
-        this.searchData.set(event);
-        this.results.set(results);
-        this.loading.set(false);
-      });
+    if (isSearchDataFrf(event)) {
+      // Handle FRF search data
+    } else {
+      let { groupId: group, section } = event;
+      section = section || Section.Masculino;
+      if (isNumber(group) && group > 0) {
+        this.loading.set(true);
+        this.results.set(null);
+        this._httpService.getResults(group, section).subscribe((results) => {
+          this.searchData.set(event);
+          this.results.set(results);
+          this.loading.set(false);
+        });
+      }
     }
   }
 

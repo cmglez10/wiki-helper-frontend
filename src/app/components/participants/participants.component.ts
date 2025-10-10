@@ -11,7 +11,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { groupBy, map, orderBy, reduce, sortBy, values } from 'lodash-es';
 import { finalize, startWith } from 'rxjs';
 import { Section } from '../../constants/section.enum';
-import { HttpService } from '../../services/http/http.service';
+import { FreApiService } from '../../services/fre-api/fre-api.service';
 import { Team } from '../../services/http/interfaces/team.interface';
 import { MultiSearchComponent, SearchSettings } from '../multi-search/multi-search.component';
 
@@ -67,7 +67,7 @@ export class ParticipantsComponent {
   public readonly groupByRegion: FormControl<boolean | null>;
   public readonly results: Signal<boolean>;
 
-  private readonly _httpService: HttpService = inject(HttpService);
+  private readonly _httpService: FreApiService = inject(FreApiService);
 
   constructor() {
     this.groupByRegion = new FormControl(false);

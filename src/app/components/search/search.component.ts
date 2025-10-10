@@ -5,8 +5,9 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatTabsModule } from '@angular/material/tabs';
 import { Section } from '../../constants/section.enum';
-import { ISearchData } from './interfaces/search-response.interface';
+import { ISearchData, SearchOrigin } from './interfaces/search-response.interface';
 
 const sectionIcon: Record<Section, string> = {
   [Section.Femenino]: 'female',
@@ -14,10 +15,14 @@ const sectionIcon: Record<Section, string> = {
   [Section.Juvenil]: 'child_care',
 };
 
-interface IFormSearch {
+interface IFormSearchFre {
   groupId: FormControl<number | null>;
   section: FormControl<Section | null>;
   flags: FormControl<boolean | null>;
+}
+
+interface IFormSearchFrf {
+  url: FormControl<string | null>;
 }
 
 @Component({
@@ -30,19 +35,26 @@ interface IFormSearch {
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    MatTabsModule,
     ReactiveFormsModule,
   ],
 })
 export class SearchComponent {
   public readonly cgiSearchDisableSectionSelector = input<boolean>(false);
   public readonly cgiSearch = output<ISearchData>();
-  public form: FormGroup<IFormSearch>;
+  public formFrf: FormGroup<IFormSearchFrf>;
+  public formFre: FormGroup<IFormSearchFre>;
+  public tabIndex = SearchOrigin.FRF;
 
   protected Section = Section;
   protected sectionIcon = sectionIcon;
 
   constructor() {
-    this.form = new FormGroup<IFormSearch>({
+    this.formFrf = new FormGroup<IFormSearchFrf>({
+      url: new FormControl<string>('', [Validators.required]),
+    });
+
+    this.formFre = new FormGroup<IFormSearchFre>({
       groupId: new FormControl<number | null>(null, [Validators.required]),
       section: new FormControl<Section>(Section.Masculino, [Validators.required]),
       flags: new FormControl<boolean>(false),
@@ -50,18 +62,26 @@ export class SearchComponent {
 
     effect(() => {
       if (this.cgiSearchDisableSectionSelector()) {
-        this.form.get('section')?.disable();
+        this.formFre.get('section')?.disable();
       } else {
-        this.form.get('section')?.enable();
+        this.formFre.get('section')?.enable();
       }
     });
   }
 
-  public search(): void {
+  public searchFrf(): void {
     this.cgiSearch.emit({
-      groupId: this.form.value.groupId!,
-      section: this.form.value.section!,
-      flags: this.form.value.flags!,
+      origin: SearchOrigin.FRF,
+      url: this.formFrf.value.url!,
+    });
+  }
+
+  public searchFre(): void {
+    this.cgiSearch.emit({
+      origin: SearchOrigin.FRE,
+      groupId: this.formFre.value.groupId!,
+      section: this.formFre.value.section!,
+      flags: this.formFre.value.flags!,
     });
   }
 }

@@ -2,15 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Section } from '../../constants/section.enum';
-import { LeagueTeam } from './interfaces/league.interface';
-import { PlayoffRound } from './interfaces/playoff.interface';
-import { Records, ResultsData } from './interfaces/results.interface';
-import { Team } from './interfaces/team.interface';
+import { LeagueTeam } from '../http/interfaces/league.interface';
+import { PlayoffRound } from '../http/interfaces/playoff.interface';
+import { Records, ResultsData } from '../http/interfaces/results.interface';
+import { Team } from '../http/interfaces/team.interface';
 
 @Injectable({
   providedIn: 'root',
 })
-export class HttpService {
+export class FreApiService {
   private readonly _http: HttpClient = inject(HttpClient);
   private readonly _baseUrl = 'http://localhost:3003/';
 

@@ -11,11 +11,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { isNumber, trimEnd } from 'lodash-es';
 import { Section } from '../../constants/section.enum';
-import { HttpService } from '../../services/http/http.service';
+import { FreApiService } from '../../services/fre-api/fre-api.service';
+import { FrfApiService } from '../../services/frf-api/frf-api.service';
 import { LeagueTeam } from '../../services/http/interfaces/league.interface';
 import { Utils } from '../../utilities/utils';
-import { ISearchData } from '../search/interfaces/search-response.interface';
+import { ISearchData, ISearchDataFre, SearchOrigin } from '../search/interfaces/search-response.interface';
 import { SearchComponent } from '../search/search.component';
+import { isSearchDataFrf } from '../search/search.utils';
 
 @Component({
   selector: 'cgi-league',
@@ -37,7 +39,8 @@ import { SearchComponent } from '../search/search.component';
   ],
 })
 export class LeagueComponent {
-  public readonly searchData: WritableSignal<ISearchData> = signal({
+  public readonly searchData: WritableSignal<ISearchDataFre> = signal({
+    origin: SearchOrigin.FRE,
     groupId: 0,
     section: Section.Masculino,
     flags: false,
@@ -61,7 +64,8 @@ export class LeagueComponent {
     'points',
   ];
 
-  private readonly _httpService: HttpService = inject(HttpService);
+  private readonly _freApiService: FreApiService = inject(FreApiService);
+  private readonly _frfApiService: FrfApiService = inject(FrfApiService);
   private readonly _teamDefinition: Signal<string>;
   private readonly _teamTable: Signal<string>;
   private readonly _teamOrder: Signal<string>;
@@ -142,16 +146,24 @@ ${this._teamOrder()}
   }
 
   public getLeague(event: ISearchData): void {
-    let { groupId: group, section } = event;
-    section = section || Section.Masculino;
-    if (isNumber(group) && group > 0) {
-      this.league.set([]);
+    if (isSearchDataFrf(event)) {
       this.loading.set(true);
-      this._httpService.getLeague(group, section).subscribe((league) => {
-        this.searchData.set(event);
+      this._frfApiService.getLeague(event.url).subscribe((league) => {
         this.league.set(league);
         this.loading.set(false);
       });
+    } else {
+      let { groupId: group, section } = event;
+      section = section || Section.Masculino;
+      if (isNumber(group) && group > 0) {
+        this.league.set([]);
+        this.loading.set(true);
+        this._freApiService.getLeague(group, section).subscribe((league) => {
+          this.searchData.set(event);
+          this.league.set(league);
+          this.loading.set(false);
+        });
+      }
     }
   }
 }

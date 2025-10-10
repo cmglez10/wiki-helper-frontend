@@ -7,8 +7,7 @@
 
   &-searchContainer {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
   }
 
   &-loading {
@@ -43,5 +42,11 @@
   &-codeInput {
     width: 100%;
     height: 100%;
+  }
+
+  &-shield {
+    height: 2.5rem;
+    width: 2.5rem;
+    object-fit: contain;
   }
 }

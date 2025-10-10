@@ -1,9 +1,22 @@
 .CgiSearch {
   &-container {
     display: flex;
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  &-tabContainerFre {
+    display: flex;
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  &-tabContainerFrf {
+    display: flex;
+    flex-direction: column;
     gap: 1rem;
     padding: 1rem;
   }

@@ -6,10 +6,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { isNumber, last, split } from 'lodash-es';
 import { DateTime } from 'luxon';
 import { Section } from '../../constants/section.enum';
-import { HttpService } from '../../services/http/http.service';
+import { FreApiService } from '../../services/fre-api/fre-api.service';
 import { Playoff, PlayoffMatch, PlayoffRound } from '../../services/http/interfaces/playoff.interface';
-import { ISearchData } from '../search/interfaces/search-response.interface';
+import { ISearchData, ISearchDataFre, SearchOrigin } from '../search/interfaces/search-response.interface';
 import { SearchComponent } from '../search/search.component';
+import { isSearchDataFrf } from '../search/search.utils';
 
 interface MatchResult {
   homeGoals: number;
@@ -23,7 +24,8 @@ interface MatchResult {
   imports: [CdkTextareaAutosize, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule, SearchComponent],
 })
 export class PlayoffComponent {
-  public readonly searchData: WritableSignal<ISearchData> = signal({
+  public readonly searchData: WritableSignal<ISearchDataFre> = signal({
+    origin: SearchOrigin.FRE,
     groupId: 0,
     section: Section.Masculino,
     flags: false,
@@ -32,7 +34,7 @@ export class PlayoffComponent {
   public readonly wikiCode: Signal<string>;
   public readonly playoffs: WritableSignal<PlayoffRound[]> = signal([]);
 
-  private readonly _httpService: HttpService = inject(HttpService);
+  private readonly _httpService: FreApiService = inject(FreApiService);
 
   constructor() {
     this.wikiCode = computed(() => {
@@ -44,15 +46,20 @@ export class PlayoffComponent {
   }
 
   public getPlayoff(event: ISearchData): void {
-    let { groupId: group, section } = event;
-    section = section || Section.Masculino;
-    if (isNumber(group) && group > 0) {
-      this.loading.set(true);
-      this._httpService.getPlayoff(group, section).subscribe((playoffs) => {
-        this.searchData.set(event);
-        this.playoffs.set(playoffs);
-        this.loading.set(false);
-      });
+    if (isSearchDataFrf(event)) {
+      // Handle FRF search data
+      return;
+    } else {
+      let { groupId: group, section } = event;
+      section = section || Section.Masculino;
+      if (isNumber(group) && group > 0) {
+        this.loading.set(true);
+        this._httpService.getPlayoff(group, section).subscribe((playoffs) => {
+          this.searchData.set(event);
+          this.playoffs.set(playoffs);
+          this.loading.set(false);
+        });
+      }
     }
   }
 

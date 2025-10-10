@@ -7,6 +7,7 @@ import { filter, find } from 'lodash-es';
 import { Section } from '../../constants/section.enum';
 import { ISearchData } from '../search/interfaces/search-response.interface';
 import { SearchComponent } from '../search/search.component';
+import { isSearchDataFrf } from '../search/search.utils';
 
 export interface SearchSettings {
   groups: Group[];
@@ -33,20 +34,24 @@ export class MultiSearchComponent {
   public displayedColumns = ['groupId', 'name', 'actions'];
 
   public addGroup(event: ISearchData): void {
-    if (this.searchOptions().groups.length === 0) {
-      this.searchOptions.update((groups) => ({ ...groups, section: event.section }));
-    }
-    if (!find(this.searchOptions().groups, { id: event.groupId })) {
-      this.searchOptions.update((searchOptions) => ({
-        ...searchOptions,
-        groups: [
-          ...searchOptions.groups,
-          {
-            id: event.groupId,
-            name: '',
-          },
-        ],
-      }));
+    if (isSearchDataFrf(event)) {
+      return;
+    } else {
+      if (this.searchOptions().groups.length === 0) {
+        this.searchOptions.update((groups) => ({ ...groups, section: event.section }));
+      }
+      if (!find(this.searchOptions().groups, { id: event.groupId })) {
+        this.searchOptions.update((searchOptions) => ({
+          ...searchOptions,
+          groups: [
+            ...searchOptions.groups,
+            {
+              id: event.groupId,
+              name: '',
+            },
+          ],
+        }));
+      }
     }
   }
 

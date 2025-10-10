@@ -4,7 +4,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { map } from 'lodash-es';
 import { finalize } from 'rxjs';
 import { Section } from '../../constants/section.enum';
-import { HttpService } from '../../services/http/http.service';
+import { FreApiService } from '../../services/fre-api/fre-api.service';
 import { Records } from '../../services/http/interfaces/results.interface';
 import { MultiSearchComponent, SearchSettings } from '../multi-search/multi-search.component';
 import { RecordsDisplayComponent } from '../records-display/records-display.component';
@@ -24,7 +24,7 @@ export class RecordsComponent {
   public readonly loading = signal(false);
   public readonly results: WritableSignal<Records | null> = signal(null);
 
-  private readonly _httpService: HttpService = inject(HttpService);
+  private readonly _httpService: FreApiService = inject(FreApiService);
 
   public getRecords(): void {
     const groupIds = map(this.searchOptions().groups, 'id');
