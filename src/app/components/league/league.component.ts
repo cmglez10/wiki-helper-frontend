@@ -19,6 +19,10 @@ import { ISearchData, ISearchDataFre, SearchOrigin } from '../search/interfaces/
 import { SearchComponent } from '../search/search.component';
 import { isSearchDataFrf } from '../search/search.utils';
 
+interface LeagueTeamWithInitials extends LeagueTeam {
+  initials: string;
+}
+
 @Component({
   selector: 'cgi-league',
   templateUrl: './league.component.html',
@@ -45,7 +49,7 @@ export class LeagueComponent {
     section: Section.Masculino,
     flags: false,
   });
-  public readonly league: WritableSignal<LeagueTeam[]> = signal([]);
+  public readonly teams: Signal<LeagueTeamWithInitials[]>;
   public readonly wikiCode: Signal<string>;
   public readonly loading = signal(false);
   public showCompleteTable: FormControl = new FormControl(false);
@@ -70,28 +74,31 @@ export class LeagueComponent {
   private readonly _teamTable: Signal<string>;
   private readonly _teamOrder: Signal<string>;
   private readonly _showCompleteTableValue = toSignal(this.showCompleteTable.valueChanges, { initialValue: false });
+  private readonly _league: WritableSignal<LeagueTeam[]> = signal([]);
 
   constructor() {
+    this.teams = computed(() => {
+      return Utils.getInitialsBulk<LeagueTeam, LeagueTeamWithInitials>(this._league());
+    });
+
     this._teamDefinition = computed(() => {
       let res = '';
-      for (const team of this.league()) {
+      for (const team of this.teams()) {
         res += `
-|nombre_${Utils.getInitials(team.name)}=[[${team.teamInfo.completeName}|${team.name}]]`;
+|nombre_${team.initials}=[[${team.teamInfo.completeName}|${team.name}]]`;
       }
       return res;
     });
 
     this._teamTable = computed(() => {
       let res = '';
-      for (const team of this.league()) {
+      for (const team of this.teams()) {
         res += `
-|ganados_${Utils.getInitials(team.name)}=${team.won}  |empates_${Utils.getInitials(team.name)}=${
-          team.drawn
-        }  |perdidos_${Utils.getInitials(team.name)}=${
+|ganados_${team.initials}=${team.won}  |empates_${team.initials}=${team.drawn}  |perdidos_${team.initials}=${
           team.lost
-        } |gf_${Utils.getInitials(team.name)}=${team.gf} |gc_${Utils.getInitials(team.name)}=${team.ga}`;
+        } |gf_${team.initials}=${team.gf} |gc_${team.initials}=${team.ga}`;
         if (team.sanction !== 0) {
-          res += ` |ajustar_puntos_${Utils.getInitials(team.name)}=${team.sanction}`;
+          res += ` |ajustar_puntos_${team.initials}=${team.sanction}`;
         }
         res += ` <!-- ${team.name} -->`;
       }
@@ -100,14 +107,14 @@ export class LeagueComponent {
 
     this._teamOrder = computed(() => {
       let res = '|orden_equipo= ';
-      for (const team of this.league()) {
-        res += `${Utils.getInitials(team.name)}, `;
+      for (const team of this.teams()) {
+        res += `${team.initials}, `;
       }
       return trimEnd(res, ', ');
     });
 
     this.wikiCode = computed(() => {
-      if (!this.league().length) {
+      if (!this.teams().length) {
         return '';
       }
 
@@ -149,18 +156,18 @@ ${this._teamOrder()}
     if (isSearchDataFrf(event)) {
       this.loading.set(true);
       this._frfApiService.getLeague(event.url).subscribe((league) => {
-        this.league.set(league);
+        this._league.set(league);
         this.loading.set(false);
       });
     } else {
       let { groupId: group, section } = event;
       section = section || Section.Masculino;
       if (isNumber(group) && group > 0) {
-        this.league.set([]);
+        this._league.set([]);
         this.loading.set(true);
         this._freApiService.getLeague(group, section).subscribe((league) => {
           this.searchData.set(event);
-          this.league.set(league);
+          this._league.set(league);
           this.loading.set(false);
         });
       }

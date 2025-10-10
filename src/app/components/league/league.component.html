@@ -26,9 +26,9 @@
         </mat-form-field>
       </div>
     }
-    @if (league().length) {
+    @if (teams().length) {
       <div class="CgiLeague-table">
-        <table mat-table [dataSource]="league()">
+        <table mat-table [dataSource]="teams()">
           <ng-container matColumnDef="position">
             <th mat-header-cell *matHeaderCellDef>Pos.</th>
             <td mat-cell *matCellDef="let team">{{ team.position }}</td>
