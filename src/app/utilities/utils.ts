@@ -1,6 +1,19 @@
 import { filter, includes, map, split } from 'lodash-es';
 
-const BANNED_WORDS_FOR_INITIALS = ['Real', 'Atlético', 'Deportivo', 'Beti', 'Fundación', 'San', 'Santo', 'Santa'];
+const OMITED_WORDS_FOR_INITIALS = ['Club', 'Sección', 'Filial'];
+
+const BANNED_WORDS_FOR_INITIALS = [
+  'Real',
+  'Atlético',
+  'Deportivo',
+  'Beti',
+  'Fundación',
+  'San',
+  'Santo',
+  'Santa',
+  'Deportiva',
+  'Unión',
+];
 
 export interface ObjectWithName {
   name: string;
@@ -12,12 +25,17 @@ export class Utils {
   }
 
   public static getInitials(teamName: string, avoidDuplicatesIteration = 0): string {
+    teamName = teamName.replaceAll('.', '');
     const mainPortions = filter(split(teamName, ' '), (portion) => portion.length > 2);
     let initialsLeft = 3;
     let portionIndex = 0;
     let initials = '';
     while (initialsLeft > 0) {
       const portion = mainPortions[portionIndex];
+      if (includes(OMITED_WORDS_FOR_INITIALS, portion)) {
+        portionIndex++;
+        continue;
+      }
       if (includes(BANNED_WORDS_FOR_INITIALS, portion)) {
         initials += portion.substring(0, 1);
         initialsLeft--;
