@@ -7,12 +7,18 @@ import { MatTableModule } from '@angular/material/table';
 import { isNumber, join, map } from 'lodash-es';
 import { Section } from '../../constants/section.enum';
 import { FreApiService } from '../../services/fre-api/fre-api.service';
+import { FrfApiService } from '../../services/frf-api/frf-api.service';
 import { ResultsData } from '../../services/http/interfaces/results.interface';
+import { Team } from '../../services/http/interfaces/team.interface';
 import { Utils } from '../../utilities/utils';
 import { RecordsDisplayComponent } from '../records-display/records-display.component';
 import { ISearchData, ISearchDataFre, SearchOrigin } from '../search/interfaces/search-response.interface';
 import { SearchComponent } from '../search/search.component';
 import { isSearchDataFrf } from '../search/search.utils';
+
+interface TeamWithInitials extends Team {
+  initials: string;
+}
 
 @Component({
   selector: 'cgi-results',
@@ -38,10 +44,20 @@ export class ResultsComponent {
   public readonly loading = signal(false);
   public readonly wikiCode: Signal<string>;
   public readonly results: WritableSignal<ResultsData | null> = signal(null);
+  public readonly teams: Signal<TeamWithInitials[]>;
 
-  private readonly _httpService: FreApiService = inject(FreApiService);
+  private readonly _freApiService: FreApiService = inject(FreApiService);
+  private readonly _frfApiService: FrfApiService = inject(FrfApiService);
 
   constructor() {
+    this.teams = computed(() => {
+      if (!this.results()) {
+        return [];
+      }
+
+      return Utils.getInitialsBulk<Team, TeamWithInitials>(this.results()!.teams);
+    });
+
     this.wikiCode = computed(() => {
       return this._getCodeResults();
     });
@@ -49,14 +65,18 @@ export class ResultsComponent {
 
   public getResults(event: ISearchData): void {
     if (isSearchDataFrf(event)) {
-      // Handle FRF search data
+      this.loading.set(true);
+      this._frfApiService.getResults(event.url).subscribe((results) => {
+        this.results.set(results);
+        this.loading.set(false);
+      });
     } else {
       let { groupId: group, section } = event;
       section = section || Section.Masculino;
       if (isNumber(group) && group > 0) {
         this.loading.set(true);
         this.results.set(null);
-        this._httpService.getResults(group, section).subscribe((results) => {
+        this._freApiService.getResults(group, section).subscribe((results) => {
           this.searchData.set(event);
           this.results.set(results);
           this.loading.set(false);
@@ -70,13 +90,13 @@ export class ResultsComponent {
       return '';
     }
 
-    const teams = map(this.results()!.teams, (team, index) => {
-      return `|equipo${index + 1}=${Utils.getInitials(team.name)}`;
+    const teams = map(this.teams(), (team, index) => {
+      return `|equipo${index + 1}=${team.initials}`;
     });
 
-    const teamNames = map(this.results()!.teams, (team) => {
+    const teamNames = map(this.teams(), (team) => {
       return `
-|nombre_${Utils.getInitials(team.name)}=[[${team.completeName}|${team.name}]]`;
+|nombre_${team.initials}=[[${team.completeName}|${team.name}]]`;
     });
 
     return `${join(teams, '')}
@@ -89,14 +109,14 @@ export class ResultsComponent {
     }
 
     let code = '';
-    for (let i = 0; i < this.results()!.teams.length; i++) {
-      for (let j = 0; j < this.results()!.teams.length; j++) {
+    for (let i = 0; i < this.teams().length; i++) {
+      for (let j = 0; j < this.teams().length; j++) {
         if (i === j) {
           continue;
         }
 
-        const homeTeam = Utils.getInitials(this.results()!.teams[i].name);
-        const awayTeam = Utils.getInitials(this.results()!.teams[j].name);
+        const homeTeam = this.teams()[i].initials;
+        const awayTeam = this.teams()[j].initials;
         const result = this.results()!.results[i][j]
           ? `${this.results()!.results[i][j].home}-${this.results()!.results[i][j].away}`
           : '';
