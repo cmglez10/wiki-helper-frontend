@@ -19,7 +19,8 @@ export class FrfApiService {
     return this._http.post<ResultsData>(`${this._baseUrl}frf-results/`, { url: ɵ_sanitizeUrl(url) });
   }
 
-  public getRecords(url: string): Observable<Records> {
-    return this._http.post<Records>(`${this._baseUrl}frf-records/`, { url: ɵ_sanitizeUrl(url) });
+  public getRecords(urls: Array<string>): Observable<Records> {
+    const sanitizedUrls = urls.map((url) => ɵ_sanitizeUrl(url));
+    return this._http.post<Records>(`${this._baseUrl}frf-records/`, { urls: sanitizedUrls });
   }
 }

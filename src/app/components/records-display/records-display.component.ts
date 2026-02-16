@@ -146,7 +146,7 @@ ${this._getBiggestAwayWinCode()}
     return code;
   }
 
-  private _getGroupName(groupId: number): string {
+  private _getGroupName(groupId: number | string): string {
     const group = find(this.cgiRecordsDisplayGroups(), { id: groupId });
     return group ? group.name : '';
   }

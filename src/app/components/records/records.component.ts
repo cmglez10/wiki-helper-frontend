@@ -33,7 +33,9 @@ export class RecordsComponent {
     if (this.searchOptions().type === 'frf') {
       this.loading.set(true);
       this.results.set(null);
-      this._frfApiService.getRecords(this.searchOptions().groups[0].id as string).subscribe((records) => {
+      const groupUrls: Array<string> = map(this.searchOptions().groups, 'id') as Array<string>;
+
+      this._frfApiService.getRecords(groupUrls).subscribe((records) => {
         this.results.set(records);
         this.loading.set(false);
       });
