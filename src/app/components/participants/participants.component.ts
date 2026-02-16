@@ -55,6 +55,7 @@ export class ParticipantsComponent {
   public readonly searchOptions = signal<SearchSettings>({
     groups: [],
     section: Section.Masculino,
+    type: 'fre',
   });
 
   public readonly loading = signal(false);
@@ -138,19 +139,21 @@ export class ParticipantsComponent {
   }
 
   public getParticipants(): void {
-    const groupIds = map(this.searchOptions().groups, 'id');
-    this.loading.set(true);
-    this.participants.set(null);
-    this._httpService
-      .getParticipants(groupIds, this.searchOptions().section)
-      .pipe(
-        finalize(() => {
-          this.loading.set(false);
-        })
-      )
-      .subscribe((fetchedParticipants) => {
-        this.participants.set(sortBy(fetchedParticipants, 'name'));
-      });
+    if (this.searchOptions().type === 'fre') {
+      const groupIds: Array<number> = map(this.searchOptions().groups, 'id') as Array<number>;
+      this.loading.set(true);
+      this.participants.set(null);
+      this._httpService
+        .getParticipants(groupIds, this.searchOptions().section)
+        .pipe(
+          finalize(() => {
+            this.loading.set(false);
+          })
+        )
+        .subscribe((fetchedParticipants) => {
+          this.participants.set(sortBy(fetchedParticipants, 'name'));
+        });
+    }
   }
 
   private _getCodeForNotGroupedTeams(): string {

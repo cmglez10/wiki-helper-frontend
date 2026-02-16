@@ -9,7 +9,7 @@
   <div class="CgiMultiSearch-selectedGroupsTable">
     <mat-table [dataSource]="searchOptions().groups">
       <ng-container matColumnDef="groupId">
-        <mat-header-cell *matHeaderCellDef class="CgiMultiSearch-groupIdHeaderCell">Id</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef class="CgiMultiSearch-groupIdHeaderCell">Id / URL</mat-header-cell>
         <mat-cell *matCellDef="let group" class="CgiMultiSearch-groupIdCell">{{ group.id }}</mat-cell>
       </ng-container>
 
@@ -32,7 +32,7 @@
       </ng-container>
 
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns; let i = columnIndex"></mat-row>
     </mat-table>
     @if (searchOptions().groups.length === 0) {
       <div class="CgiMultiSearch-noGroups">

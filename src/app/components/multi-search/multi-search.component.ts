@@ -10,12 +10,13 @@ import { SearchComponent } from '../search/search.component';
 import { isSearchDataFrf } from '../search/search.utils';
 
 export interface SearchSettings {
-  groups: Group[];
+  groups: IGroup[];
   section: Section;
+  type: 'fre' | 'frf';
 }
 
-export interface Group {
-  id: number;
+export interface IGroup {
+  id: number | string;
   name: string;
 }
 
@@ -29,20 +30,34 @@ export class MultiSearchComponent {
   public readonly searchOptions = model<SearchSettings>({
     groups: [],
     section: Section.Masculino,
+    type: 'fre',
   });
 
   public displayedColumns = ['groupId', 'name', 'actions'];
 
   public addGroup(event: ISearchData): void {
     if (isSearchDataFrf(event)) {
-      return;
+      this.searchOptions.update((searchOptions) => {
+        return {
+          ...searchOptions,
+          type: 'frf',
+          groups: [
+            ...searchOptions.groups,
+            {
+              id: event.url,
+              name: '',
+            },
+          ],
+        };
+      });
     } else {
       if (this.searchOptions().groups.length === 0) {
-        this.searchOptions.update((groups) => ({ ...groups, section: event.section }));
+        this.searchOptions.update((groups) => ({ ...groups, type: 'fre', section: event.section }));
       }
       if (!find(this.searchOptions().groups, { id: event.groupId })) {
         this.searchOptions.update((searchOptions) => ({
           ...searchOptions,
+          type: 'fre',
           groups: [
             ...searchOptions.groups,
             {

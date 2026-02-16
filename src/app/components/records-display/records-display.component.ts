@@ -5,7 +5,7 @@ import { MatInputModule } from '@angular/material/input';
 import { find } from 'lodash-es';
 import { DateTime } from 'luxon';
 import { Records } from '../../services/http/interfaces/results.interface';
-import { Group } from '../multi-search/multi-search.component';
+import { IGroup } from '../multi-search/multi-search.component';
 
 @Component({
   selector: 'cgi-records-display',
@@ -15,7 +15,7 @@ import { Group } from '../multi-search/multi-search.component';
 })
 export class RecordsDisplayComponent {
   public readonly cgiRecordsDisplayRecords = input.required<Records>();
-  public readonly cgiRecordsDisplayGroups = input<Group[]>([]);
+  public readonly cgiRecordsDisplayGroups = input<IGroup[]>([]);
 
   public readonly recordsCode: Signal<string>;
 
